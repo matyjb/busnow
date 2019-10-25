@@ -2,3 +2,5 @@
 app/android/app/src/main/res/values/secrets.json
 
 app/secrets.properties
+
+app/.env
