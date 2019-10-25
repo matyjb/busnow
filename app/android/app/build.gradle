@@ -6,6 +6,11 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+def apikeyProperties = new Properties()
+def apikeyPropertiesFile = rootProject.file('../secrets.properties')
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+System.out.println(apikeyProperties);
+
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
     throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
@@ -39,6 +44,9 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        resValue("string", "GOOGLE_MAPS_API_KEY", apikeyProperties['GOOGLE_MAPS_API_KEY'])
+        resValue("string", "WARSAW_API_KEY", apikeyProperties['WARSAW_API_KEY'])
     }
 
     buildTypes {
