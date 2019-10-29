@@ -8,10 +8,39 @@ export const BusTramApiContext = createContext();
 export default class BusTramApiContextProvider extends Component {
   state = {
     vehicles: [],
-    updateVehicles: this.updateVehicles,
     lines: ['709','739', '727', '185', '209', '401', '193','737'],
-    toggleLine: this.toggleLine
+    mapRegion: {
+      latitude: 52.122801,
+      longitude: 21.018324,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    },
+    radar: {
+      coordinates: {
+        latitude: 0,
+        longitude: 0,
+      },
+      radiusKMs: 1.5,
+      isOn: false,
+    },
+  }
 
+  toggleRadar = () => {    
+    var coords = {latitude: this.state.mapRegion.latitude, longitude: this.state.mapRegion.longitude}
+    this.setState({radar: {...this.state.radar, isOn: !this.state.radar.isOn, coordinates: coords}});
+  }
+  setMapRegion = (newRegion) => {
+    // console.log(newRegion);
+    
+    this.setState({mapRegion: newRegion});
+  }
+
+
+  setRadarCoordinates = (newCoordinates) => {
+    this.setState({radar: {...this.state.radar, coordinates: newCoordinates}});
+  }
+  setRadarRadius = (newRadius) => {
+    this.setState({radar: {...this.state.radar, radiusKMs: newRadius}});
   }
 
   toggleLine = (line) => {
@@ -65,8 +94,17 @@ export default class BusTramApiContextProvider extends Component {
   }
 
   render() {
+    var value = {
+      ...this.state,
+      updateVehicles: this.updateVehicles,
+      toggleLine: this.toggleLine,
+      setRadarCoordinates: this.setRadarCoordinates,
+      setRadarRadius: this.setRadarRadius,
+      toggleRadar: this.toggleRadar,
+      setMapRegion: this.setMapRegion,
+    }
     return (
-      <BusTramApiContext.Provider value={{...this.state}}>
+      <BusTramApiContext.Provider value={value}>
         {this.props.children}
       </BusTramApiContext.Provider>
     )
