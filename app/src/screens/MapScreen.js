@@ -54,16 +54,17 @@ export default class MapScreen extends Component {
               rotateEnabled={true}
               style={{...StyleSheet.absoluteFillObject}}
               >
-                {vehicles.map((v, i) => (
+                {vehicles.map((v) => (
                   // <Marker
                   //   key={i}
                   //   coordinate={{"latitude": v.Lat, "longitude": v.Lon}}
                   //   title={v.Lines}
                   // />
                   <Vehicle
-                    key={i}
+                    key={v.Lines + "-" + v.Brigade}
                     newCoordinate={{"latitude": v.Lat, "longitude": v.Lon}}
                     line={v.Lines}
+                    brigade={v.Brigade}
                   />
                 ))}
                 {/* <Marker.Animated

@@ -5,16 +5,14 @@ import { AnimatedRegion, Marker } from 'react-native-maps';
 const screen = Dimensions.get('window');
 
 const ASPECT_RATIO = screen.width / screen.height;
-const LATITUDE = 52.122801;
-const LONGITUDE = 21.018324;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 export default class Vehicle extends Component {
   state = {
     coordinate: new AnimatedRegion({
-      latitude: LATITUDE,
-      longitude: LONGITUDE,
+      latitude: this.props.newCoordinate.latitude,
+      longitude: this.props.newCoordinate.longitude,
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA
     }),
@@ -34,6 +32,7 @@ export default class Vehicle extends Component {
       coordinate.timing(newCoordinate).start();
     }
   }
+
   componentDidUpdate(){
     this.animate(this.props.newCoordinate);
   }
@@ -44,9 +43,11 @@ export default class Vehicle extends Component {
             this.marker = marker;
           }}
           coordinate={this.state.coordinate}
+          tracksViewChanges={false}
+          
         >
           <View style={styles.container}>
-            <Text>{this.props.line}</Text>
+            <Text style={styles.text}>{this.props.line}</Text>
           </View>
         </Marker.Animated>
     )
@@ -56,7 +57,8 @@ export default class Vehicle extends Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 4,
+    // borderRadius: 4,
+    borderRadius: 40,
     borderWidth: 0.7,
     borderStyle: "solid",
     borderColor: '#DBA656',
@@ -64,6 +66,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    paddingHorizontal: 2
+    paddingHorizontal: 2,
+    width: 23,
+    height: 23,
+    justifyContent: "center"
+  },
+  text: {
+    fontSize: 10
   }
 })

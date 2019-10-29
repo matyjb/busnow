@@ -1,12 +1,12 @@
 const fetch = require("node-fetch");
 
-function getbus(line){
+async function getbus(line){
 
   var apikey = "ffe0614a-0e30-47a4-a207-64cd1d630932";
   var type = "1";
   var resource_id = "f2e5503e927d-4ad3-9500-4ab9e55deb59";
   
-  fetch("https://api.um.warszawa.pl/api/action/busestrams_get/?resource_id="+resource_id+"&apikey="+apikey+"&type="+type+"&line="+line,{method: "get"})
+  await fetch("https://api.um.warszawa.pl/api/action/busestrams_get/?resource_id="+resource_id+"&apikey="+apikey+"&type="+type+"&line="+line,{method: "get"})
   .then(res => res.json())
   .then(res => {
     if(Array.isArray(res.result)){
