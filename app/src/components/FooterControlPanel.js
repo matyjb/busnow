@@ -1,5 +1,5 @@
-import React, { Component, useContext } from 'react'
-import { Text, StyleSheet, View } from 'react-native'
+import React, { useContext } from 'react'
+import { StyleSheet } from 'react-native'
 import { Footer, FooterTab, Button, Icon } from 'native-base'
 import { BusTramApiContext } from '../contexts/BusTramApiContext'
 

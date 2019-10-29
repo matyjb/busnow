@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View, Dimensions } from 'react-native'
 import { AnimatedRegion, Marker } from 'react-native-maps';
+import PropTypes from "prop-types";
 
 const screen = Dimensions.get('window');
 
@@ -11,18 +12,14 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 export default class Vehicle extends Component {
   state = {
     coordinate: new AnimatedRegion({
-      latitude: this.props.newCoordinate.latitude,
-      longitude: this.props.newCoordinate.longitude,
+      latitude: this.props.coordinates.latitude,
+      longitude: this.props.coordinates.longitude,
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA
     }),
   }
   animate(newCoordinate) {
     const { coordinate } = this.state;
-    // const newCoordinate = {
-    //   latitude: LATITUDE + (Math.random() - 0.5) * (LATITUDE_DELTA / 2),
-    //   longitude: LONGITUDE + (Math.random() - 0.5) * (LONGITUDE_DELTA / 2),
-    // };
 
     if (Platform.OS === 'android') {
       if (this.marker) {
@@ -34,22 +31,22 @@ export default class Vehicle extends Component {
   }
 
   componentDidUpdate(){
-    this.animate(this.props.newCoordinate);
+    this.animate(this.props.coordinates);
   }
   render() {
     return (
-        <Marker.Animated
-          ref={marker => {
-            this.marker = marker;
-          }}
-          coordinate={this.state.coordinate}
-          tracksViewChanges={false}
-          
-        >
-          <View style={styles.container}>
-            <Text style={styles.text}>{this.props.line}</Text>
-          </View>
-        </Marker.Animated>
+      <Marker.Animated
+        ref={marker => {
+          this.marker = marker;
+        }}
+        coordinate={this.state.coordinate}
+        tracksViewChanges={false}
+        
+      >
+        <View style={styles.container}>
+          <Text style={styles.text}>{this.props.line}</Text>
+        </View>
+      </Marker.Animated>
     )
   }
 }
@@ -75,3 +72,18 @@ const styles = StyleSheet.create({
     fontSize: 10
   }
 })
+
+Vehicle.propTypes = {
+  coordinates: PropTypes.exact({
+    latitude: PropTypes.number,
+    longitude: PropTypes.number
+  }), 
+  line: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]).isRequired,
+  brigade: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]).isRequired,
+}

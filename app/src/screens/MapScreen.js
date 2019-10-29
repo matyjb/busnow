@@ -1,60 +1,51 @@
-import React, { Component } from 'react'
+import React, { useContext } from 'react'
 import { StyleSheet, View } from 'react-native'
-import MapView, { Marker, Circle } from 'react-native-maps';
+import MapView, { Circle } from 'react-native-maps';
 import {BusTramApiContext} from '../contexts/BusTramApiContext'
 import Vehicle from '../components/Vehicle';
 import FooterControlPanel from '../components/FooterControlPanel';
 
-export default class MapScreen extends Component {
-  render() {
-    const initRegion = {
-      latitude: 52.122801,
-      longitude: 21.018324,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    }
-
-    return (
-      <View style={styles.container}>
-        <BusTramApiContext.Consumer>
-          {({vehicles, setMapRegion, radar}) => (
-            <>
-              <MapView
-                initialRegion={initRegion}
-                // region={mapRegion}
-                showsCompass={true}
-                rotateEnabled={false}
-                style={{...StyleSheet.absoluteFillObject}}
-                onRegionChangeComplete={setMapRegion}
-              >
-                {vehicles.map((v) => (
-                  <Vehicle
-                    key={v.Lines + "-" + v.Brigade}
-                    newCoordinate={{"latitude": v.Lat, "longitude": v.Lon}}
-                    line={v.Lines}
-                    brigade={v.Brigade}
-                  />
-                  ))}
-                  {radar.isOn &&
-                    <Circle
-                      style={{zIndex: 999}}
-                      center = {radar.coordinates }
-                      radius = { radar.radiusKMs *1000 }
-                      strokeWidth = { 1 }
-                      strokeColor = { '#1a66ff' }
-                      fillColor = { '#1a66ff11' }
-                    />
-                  }
-              </MapView>
-              <FooterControlPanel/>
-            </>
-          )}
-        </BusTramApiContext.Consumer>
-      </View>
-    )
+const MapScreen = () => {
+  const {vehicles, setMapRegion, radar} = useContext(BusTramApiContext);
+  const initRegion = {
+    latitude: 52.122801,
+    longitude: 21.018324,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
   }
+  
+  return (
+    <View style={styles.container}>
+      <MapView
+        initialRegion={initRegion}
+        showsCompass={true}
+        rotateEnabled={false}
+        style={{...StyleSheet.absoluteFillObject}}
+        onRegionChangeComplete={setMapRegion}
+      >
+        {vehicles.map((v) => (
+          <Vehicle
+            key={v.Lines + "-" + v.Brigade}
+            coordinates={{"latitude": v.Lat, "longitude": v.Lon}}
+            line={v.Lines}
+            brigade={v.Brigade}
+          />
+          ))}
+          {radar.isOn &&
+            <Circle
+              style={{zIndex: 999}}
+              center = {radar.coordinates }
+              radius = { radar.radiusKMs *1000 }
+              strokeWidth = { 1 }
+              strokeColor = { '#1a66ff' }
+              fillColor = { '#1a66ff11' }
+            />
+          }
+      </MapView>
+      <FooterControlPanel/>
+    </View>
+  )
 }
-
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
@@ -80,3 +71,5 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
 })
+
+export default MapScreen;

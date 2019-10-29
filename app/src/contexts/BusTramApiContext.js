@@ -30,8 +30,6 @@ export default class BusTramApiContextProvider extends Component {
     this.setState({radar: {...this.state.radar, isOn: !this.state.radar.isOn, coordinates: coords}});
   }
   setMapRegion = (newRegion) => {
-    // console.log(newRegion);
-    
     this.setState({mapRegion: newRegion});
   }
 
