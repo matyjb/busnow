@@ -26,6 +26,8 @@ export default class BusTramApiContextProvider extends Component {
   }
 
   toggleRadar = () => {    
+    console.log("hello");
+    
     var coords = {latitude: this.state.mapRegion.latitude, longitude: this.state.mapRegion.longitude}
     this.setState({radar: {...this.state.radar, isOn: !this.state.radar.isOn, coordinates: coords}});
   }
@@ -42,11 +44,10 @@ export default class BusTramApiContextProvider extends Component {
   }
 
   toggleLine = (line) => {
-    var filtered = this.state.lines.filter(l => {
-      return l != line;
-    });
-    this.setState({lines: filtered});
-    this.updateVehicles();
+    var linesSet = new Set(this.state.lines);
+    if(linesSet.has(line)) linesSet.delete(line);
+    else linesSet.add(line);
+    this.setState({lines: [...linesSet]});
   }
   updateVehicles = async() => {
     var vehiclesFiltered = [];
