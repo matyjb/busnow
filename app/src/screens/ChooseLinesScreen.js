@@ -1,19 +1,11 @@
 import React, { useContext } from 'react'
 import { StyleSheet, Dimensions } from 'react-native'
 import {BusTramApiContext} from '../contexts/BusTramApiContext'
-import { Container, Header, Text, Button, Footer, View } from 'native-base';
-import LINES from "./../constants/Lines"
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-
-const renderItem = (item) => 
-    <TouchableOpacity onPress={() => console.log(item)}>
-      <View style={styles.item}>
-        <Text>{item}</Text>
-      </View>
-    </TouchableOpacity>
+import { Container, Header, Text, Button, Footer } from 'native-base';
+import LinesList from '../components/LinesList';
 
 const ChooseLinesScreen = (props) => {
-  const {lines, toggleLine} = useContext(BusTramApiContext);
+  const {lines} = useContext(BusTramApiContext);
   return (
     <Container style={styles.container}>
       <Header>
@@ -21,14 +13,7 @@ const ChooseLinesScreen = (props) => {
             <Text key={index}>{item}</Text>
         )}
       </Header>
-          <FlatList
-            style={styles.flatList}
-            data={LINES}
-            numColumns={5}
-            removeClippedSubviews
-            keyExtractor={(item, index) => index}
-            renderItem={({item}) => renderItem(item)}
-          />
+      <LinesList/>
       <Footer>
         <Button onPress={()=> props.navigation.goBack()}>
           <Text>back</Text>

@@ -26,8 +26,6 @@ export default class BusTramApiContextProvider extends Component {
   }
 
   toggleRadar = () => {    
-    console.log("hello");
-    
     var coords = {latitude: this.state.mapRegion.latitude, longitude: this.state.mapRegion.longitude}
     this.setState({radar: {...this.state.radar, isOn: !this.state.radar.isOn, coordinates: coords}});
   }
