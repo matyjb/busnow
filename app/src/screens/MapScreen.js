@@ -1,10 +1,11 @@
-import React, {useContext} from 'react';
+import React, {createRef} from 'react';
 import {StyleSheet, View} from 'react-native';
 import MapView, {Circle} from 'react-native-maps';
 import {BusTramApiContext} from '../contexts/BusTramApiContext';
 import Vehicle from '../components/Vehicle';
-import {Fab, Icon, Button, Drawer, Text} from 'native-base';
+import {Fab, Icon, Button, Drawer, Text, Content, Body} from 'native-base';
 import {withTheme} from './../theming';
+import Modal from 'react-native-modalbox';
 
 class MapScreen extends React.Component {
   static navigationOptions = {
@@ -50,7 +51,7 @@ class MapScreen extends React.Component {
                   )}
                 </MapView>
               </View>
-              <View style={{flex: 1}}>
+              <View style={{flex: 1, marginBottom: 10, zIndex: 0}}>
                 <Fab
                   active={true}
                   containerStyle={{}}
@@ -77,13 +78,13 @@ class MapScreen extends React.Component {
                     style={{backgroundColor: this.props.theme.accentColor}}
                     onPress={() => this.props.navigation.navigate('Settings')}>
                     <Icon
-                      name="md-menu"
+                      name="md-settings"
                       style={{color: this.props.theme.primaryColor}}
                     />
                   </Button>
                   <Button
                     style={{backgroundColor: this.props.theme.accentColor}}
-                    onPress={() => this.openDrawer()}>
+                    onPress={() => this._modal.open()}>
                     <Icon
                       name="md-menu"
                       style={{color: this.props.theme.primaryColor}}
@@ -91,6 +92,15 @@ class MapScreen extends React.Component {
                   </Button>
                 </Fab>
               </View>
+              <Modal
+                style={{height: 300, zIndex: 1}}
+                position={'bottom'}
+                backButtonClose
+                ref={ref => {
+                  this._modal = ref;
+                }}>
+                <Text>Modal on bottom with backdrop</Text>
+              </Modal>
             </>
           );
         }}
