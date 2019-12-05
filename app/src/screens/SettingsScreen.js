@@ -29,7 +29,7 @@ class SettingsScreen extends React.Component {
           </Body>
           <Right />
         </Header>
-        <Content>
+        <Content style={{backgroundColor: this.props.theme.primaryColor}}>
           <Button onPress={() => this.props.handleThemeChange('dark')}>
             <Text>change theme</Text>
           </Button>

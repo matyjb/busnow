@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Text, StyleSheet, View, Dimensions } from 'react-native'
 import { AnimatedRegion, Marker } from 'react-native-maps';
 import PropTypes from "prop-types";
+import {withTheme} from './../theming';
 
 const screen = Dimensions.get('window');
 
@@ -9,7 +10,7 @@ const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-export default class Vehicle extends Component {
+class Vehicle extends Component {
   state = {
     coordinate: new AnimatedRegion({
       latitude: this.props.coordinates.latitude,
@@ -41,10 +42,9 @@ export default class Vehicle extends Component {
         }}
         coordinate={this.state.coordinate}
         tracksViewChanges={false}
-        
       >
-        <View style={styles.container}>
-          <Text style={styles.text}>{this.props.line}</Text>
+        <View style={{...styles.container, backgroundColor: this.props.theme.vehicleBgColor}}>
+          <Text style={{...styles.text, color: this.props.theme.textColor}}>{this.props.line}</Text>
         </View>
       </Marker.Animated>
     )
@@ -87,3 +87,5 @@ Vehicle.propTypes = {
     PropTypes.number
   ]).isRequired,
 }
+
+export default withTheme(Vehicle);

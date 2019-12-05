@@ -5,29 +5,30 @@ import {createAppContainer} from 'react-navigation';
 import AppNavigator from './AppNavigator';
 import {themes} from './theming';
 import BusTramApiContextProvider from './contexts/BusTramApiContext';
+import {Root} from 'native-base';
 
 const AppContainer = props => {
   const AppContainer = createAppContainer(AppNavigator(props));
-  return <AppContainer/>
+  return <AppContainer />;
 };
 // const AppContainer = props => createAppContainer(AppNavigator(props));
 export default class App extends Component {
   state = {
     theme: themes.default,
   };
-  handleThemeChange = (themeName) => {
-    this.setState({ theme: themes[themeName] });
+  handleThemeChange = themeName => {
+    this.setState({theme: themes[themeName]});
   };
   render() {
     return (
-      <>
-        <ThemeProvider theme={this.state.theme}>
-          <BusTramApiContextProvider>
-            <StatusBar hidden />
-            <AppContainer handleThemeChange={this.handleThemeChange}/>
-          </BusTramApiContextProvider>
-        </ThemeProvider>
-      </>
+      <Root>
+        <BusTramApiContextProvider>
+          <StatusBar hidden />
+          <ThemeProvider theme={this.state.theme}>
+            <AppContainer handleThemeChange={this.handleThemeChange} />
+          </ThemeProvider>
+        </BusTramApiContextProvider>
+      </Root>
     );
   }
 }
