@@ -1,14 +1,16 @@
 import { createStackNavigator } from 'react-navigation-stack';
-import MapScreen from './screens/MapScreen'
-import ChooseLinesScreen from './screens/ChooseLinesScreen';
+import React, {Component} from 'react';
+import MapScreen from './screens/MapScreen';
+import SettingsScreen from './screens/SettingsScreen';
 
-const AppNavigator = createStackNavigator({
+const AppNavigator = screenProps => {
+  return createStackNavigator({
   Map: {
     screen: MapScreen,
   },
-  ChooseLines: {
-    screen: ChooseLinesScreen,
-  },
+  Settings: {
+    screen: props => <SettingsScreen {...props} {...screenProps}/>,
+  }
 },{
   initialRouteName: 'Map',
   defaultNavigationOptions: {
@@ -18,5 +20,5 @@ const AppNavigator = createStackNavigator({
     },
   },
 });
-
+}
 export default AppNavigator;

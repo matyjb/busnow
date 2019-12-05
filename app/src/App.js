@@ -1,21 +1,35 @@
-import React, { Component } from 'react'
-import { Text, StyleSheet, View, StatusBar, SafeAreaView } from 'react-native'
-import { createAppContainer } from 'react-navigation';
+import React, {Component} from 'react';
+import {ThemeProvider} from './theming';
+import {Text, StyleSheet, View, StatusBar, SafeAreaView} from 'react-native';
+import {createAppContainer} from 'react-navigation';
 import AppNavigator from './AppNavigator';
+import {themes} from './theming';
 import BusTramApiContextProvider from './contexts/BusTramApiContext';
 
-const AppContainer = createAppContainer(AppNavigator);
+const AppContainer = props => {
+  const AppContainer = createAppContainer(AppNavigator(props));
+  return <AppContainer/>
+};
+// const AppContainer = props => createAppContainer(AppNavigator(props));
 export default class App extends Component {
+  state = {
+    theme: themes.default,
+  };
+  handleThemeChange = (themeName) => {
+    this.setState({ theme: themes[themeName] });
+  };
   render() {
     return (
       <>
-        <BusTramApiContextProvider>
-          <StatusBar barStyle="dark-content" />
-          <AppContainer />
-        </BusTramApiContextProvider>
+        <ThemeProvider theme={this.state.theme}>
+          <BusTramApiContextProvider>
+            <StatusBar hidden />
+            <AppContainer handleThemeChange={this.handleThemeChange}/>
+          </BusTramApiContextProvider>
+        </ThemeProvider>
       </>
-    )
+    );
   }
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

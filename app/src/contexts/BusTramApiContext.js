@@ -83,8 +83,8 @@ export default class BusTramApiContextProvider extends Component {
 
 
   componentDidMount() {
+    this.updateVehicles();
     this.interval = setInterval(this.updateVehicles, 10000);
-    // this.updateVehicles();
   }
   componentWillUnmount() {
     clearInterval(this.interval);
