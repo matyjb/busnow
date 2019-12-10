@@ -51,47 +51,45 @@ class MapScreen extends React.Component {
                   )}
                 </MapView>
               </View>
-              <View style={{flex: 1, marginBottom: 10, zIndex: 0}}>
-                <Fab
-                  active={true}
-                  containerStyle={{}}
-                  style={{backgroundColor: this.props.theme.accentColor}}
-                  position="bottomRight"
-                  onPress={() => toggleRadar()}>
+              <Fab
+                active={true}
+                containerStyle={{}}
+                style={{backgroundColor: this.props.theme.accentColor}}
+                position="bottomRight"
+                onPress={() => toggleRadar()}>
+                <Icon
+                  name="radar"
+                  type="MaterialCommunityIcons"
+                  style={{color: this.props.theme.primaryColor}}
+                />
+                <Button
+                  style={{
+                    backgroundColor: this.props.theme.accentColor,
+                    marginBottom: 14,
+                  }}>
                   <Icon
-                    name="radar"
-                    type="MaterialCommunityIcons"
+                    name="gps-fixed"
+                    type="MaterialIcons"
                     style={{color: this.props.theme.primaryColor}}
                   />
-                  <Button
-                    style={{
-                      backgroundColor: this.props.theme.accentColor,
-                      marginBottom: 14,
-                    }}>
-                    <Icon
-                      name="gps-fixed"
-                      type="MaterialIcons"
-                      style={{color: this.props.theme.primaryColor}}
-                    />
-                  </Button>
-                  <Button
-                    style={{backgroundColor: this.props.theme.accentColor}}
-                    onPress={() => this.props.navigation.navigate('Settings')}>
-                    <Icon
-                      name="md-settings"
-                      style={{color: this.props.theme.primaryColor}}
-                    />
-                  </Button>
-                  <Button
-                    style={{backgroundColor: this.props.theme.accentColor}}
-                    onPress={() => this._modal.open()}>
-                    <Icon
-                      name="md-menu"
-                      style={{color: this.props.theme.primaryColor}}
-                    />
-                  </Button>
-                </Fab>
-              </View>
+                </Button>
+                <Button
+                  style={{backgroundColor: this.props.theme.accentColor}}
+                  onPress={() => this.props.navigation.navigate('Settings')}>
+                  <Icon
+                    name="md-settings"
+                    style={{color: this.props.theme.primaryColor}}
+                  />
+                </Button>
+                <Button
+                  style={{backgroundColor: this.props.theme.accentColor}}
+                  onPress={() => this._modal.open()}>
+                  <Icon
+                    name="md-menu"
+                    style={{color: this.props.theme.primaryColor}}
+                  />
+                </Button>
+              </Fab>
               <Modal
                 style={{height: 300, zIndex: 1}}
                 position={'bottom'}
