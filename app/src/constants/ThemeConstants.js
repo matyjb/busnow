@@ -1,7 +1,5 @@
-import { createTheming } from '@callstack/react-theme-provider';
-
-export const themes = {
-  "default": {
+export const ThemeConstants = {
+  light: {
     primaryColor: '#FFFFFF',
     secondaryColor: '#EDEDED',
     accentColor: '#F6BD67',
@@ -77,7 +75,7 @@ export const themes = {
       }
     ]
   },
-  "dark": {
+  dark: {
     primaryColor: '#494949',
     secondaryColor: '#6C6C6C',
     accentColor: '#F6BD67',
@@ -313,8 +311,3 @@ export const themes = {
     ]
   },
 };
-const { ThemeProvider, withTheme } = createTheming(
-  themes.default
-);
-
-export { ThemeProvider, withTheme };

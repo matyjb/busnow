@@ -1,47 +1,35 @@
 import React, {Component} from 'react';
-import {View, StyleSheet} from 'react-native';
-import {withTheme} from './../theming';
-import {
-  Container,
-  Header,
-  Left,
-  Icon,
-  Body,
-  Button,
-  Title,
-  Right,
-  Text,
-  Content,
-} from 'native-base';
+import {ThemeContext} from './../AppContainer';
+import {ThemeConstants} from './../constants/ThemeConstants';
+import {Container, Button, Text, Content} from 'native-base';
 
 class SettingsScreen extends React.Component {
+  static contextType = ThemeContext;
+  static navigationOptions = ({screenProps}) => {
+    let t = ThemeConstants[screenProps.theme];
+
+    return {
+      title: 'Ustawienia',
+      headerTintColor: 'white',
+      headerStyle: {backgroundColor: t.headerColor},
+    };
+  };
+
   render() {
+    let t = ThemeConstants[this.context.theme];
     return (
       <Container>
-        <Header style={{backgroundColor: this.props.theme.headerColor}}>
-          <Left>
-            <Button transparent onPress={() => this.props.navigation.goBack()}>
-              <Icon name="arrow-back" />
-            </Button>
-          </Left>
-          <Body>
-            <Title>Ustawienia</Title>
-          </Body>
-          <Right />
-        </Header>
-        <Content style={{backgroundColor: this.props.theme.primaryColor}}>
-          <Button onPress={() => this.props.handleThemeChange('dark')}>
-            <Text>change theme</Text>
-          </Button>
-          <Button onPress={() => this.props.handleThemeChange('default')}>
-            <Text>change theme</Text>
+        <Content style={{backgroundColor: t.primaryColor}}>
+          <Button onPress={() => this.context.toggleTheme()}>
+            <Text>
+              zmień motyw na {this.context.theme == 'dark' ? 'jasny' : 'ciemny'}
+            </Text>
           </Button>
         </Content>
       </Container>
     );
   }
 }
-const styles = StyleSheet.create({});
+// const styles = StyleSheet.create({});
 
-// export default withTheme(SettingsScreen);
-export default withTheme(SettingsScreen);
+export default SettingsScreen;
