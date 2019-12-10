@@ -1,16 +1,20 @@
-import React, {createRef} from 'react';
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import MapView, {Circle} from 'react-native-maps';
 import {BusTramApiContext} from '../contexts/BusTramApiContext';
 import Vehicle from '../components/Vehicle';
-import {Fab, Icon, Button, Drawer, Text, Content, Body} from 'native-base';
-import {withTheme} from './../theming';
+import {Fab, Icon, Button, Text} from 'native-base';
 import Modal from 'react-native-modalbox';
 
+import {ThemeContext} from './../AppContainer';
+import {ThemeConstants} from './../constants/ThemeConstants';
+
 class MapScreen extends React.Component {
+  static contextType = ThemeContext;
   static navigationOptions = {
     header: null,
   };
+
   render() {
     const initRegion = {
       latitude: 52.122801,
@@ -18,6 +22,7 @@ class MapScreen extends React.Component {
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     };
+    let t = ThemeConstants[this.context.theme];
     return (
       <BusTramApiContext.Consumer>
         {({vehicles, setMapRegion, radar, toggleRadar}) => {
@@ -25,7 +30,7 @@ class MapScreen extends React.Component {
             <>
               <View style={styles.container}>
                 <MapView
-                  customMapStyle={this.props.theme.mapStyle}
+                  customMapStyle={t.mapStyle}
                   initialRegion={initRegion}
                   showsCompass={true}
                   rotateEnabled={false}
@@ -45,8 +50,8 @@ class MapScreen extends React.Component {
                       center={radar.coordinates}
                       radius={radar.radiusKMs * 1000}
                       strokeWidth={1}
-                      strokeColor={this.props.theme.radarStrokeColor}
-                      fillColor={this.props.theme.radarFillColor}
+                      strokeColor={t.radarStrokeColor}
+                      fillColor={t.radarFillColor}
                     />
                   )}
                 </MapView>
@@ -54,39 +59,39 @@ class MapScreen extends React.Component {
               <Fab
                 active={true}
                 containerStyle={{}}
-                style={{backgroundColor: this.props.theme.accentColor}}
+                style={{backgroundColor: t.accentColor}}
                 position="bottomRight"
                 onPress={() => toggleRadar()}>
                 <Icon
                   name="radar"
                   type="MaterialCommunityIcons"
-                  style={{color: this.props.theme.primaryColor}}
+                  style={{color: t.primaryColor}}
                 />
                 <Button
                   style={{
-                    backgroundColor: this.props.theme.accentColor,
+                    backgroundColor: t.accentColor,
                     marginBottom: 14,
                   }}>
                   <Icon
                     name="gps-fixed"
                     type="MaterialIcons"
-                    style={{color: this.props.theme.primaryColor}}
+                    style={{color: t.primaryColor}}
                   />
                 </Button>
                 <Button
-                  style={{backgroundColor: this.props.theme.accentColor}}
+                  style={{backgroundColor: t.accentColor}}
                   onPress={() => this.props.navigation.navigate('Settings')}>
                   <Icon
                     name="md-settings"
-                    style={{color: this.props.theme.primaryColor}}
+                    style={{color: t.primaryColor}}
                   />
                 </Button>
                 <Button
-                  style={{backgroundColor: this.props.theme.accentColor}}
+                  style={{backgroundColor: t.accentColor}}
                   onPress={() => this._modal.open()}>
                   <Icon
                     name="md-menu"
-                    style={{color: this.props.theme.primaryColor}}
+                    style={{color: t.primaryColor}}
                   />
                 </Button>
               </Fab>
@@ -114,4 +119,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(MapScreen);
+export default MapScreen;
