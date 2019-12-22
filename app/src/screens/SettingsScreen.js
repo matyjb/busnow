@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {ThemeContext} from './../AppContainer';
 import {ThemeConstants} from './../constants/ThemeConstants';
 import {Container, Button, Text, Content} from 'native-base';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 class SettingsScreen extends React.Component {
   static navigationOptions = ({screenProps}) => {
@@ -17,9 +17,7 @@ class SettingsScreen extends React.Component {
   render() {
     return (
       <ThemeContext.Consumer>
-        {({theme, toggleTheme}) => {
-          let t = ThemeConstants[theme];
-          return (
+        {({t, toggleTheme, theme}) => 
             <Container>
               <Content style={{backgroundColor: t.primaryColor}}>
                 <Button onPress={() => toggleTheme()}>
@@ -29,8 +27,7 @@ class SettingsScreen extends React.Component {
                 </Button>
               </Content>
             </Container>
-          );
-        }}
+        }
       </ThemeContext.Consumer>
     );
   }

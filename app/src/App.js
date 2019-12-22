@@ -3,6 +3,7 @@ import {Text, StyleSheet, View, StatusBar, SafeAreaView} from 'react-native';
 import BusTramApiContextProvider from './contexts/BusTramApiContext';
 import {Root} from 'native-base';
 import AppContainer from './AppContainer';
+import ThemeContextProvider from './contexts/ThemeContext';
 
 export default class App extends Component {
   render() {
@@ -10,7 +11,9 @@ export default class App extends Component {
       <Root>
         <BusTramApiContextProvider>
           <StatusBar hidden />
-          <AppContainer/>
+          <ThemeContextProvider>
+            <AppContainer />
+          </ThemeContextProvider>
         </BusTramApiContextProvider>
       </Root>
     );

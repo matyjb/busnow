@@ -6,7 +6,7 @@ import Vehicle from '../components/Vehicle';
 import {Fab, Icon, Button, Text} from 'native-base';
 import Modal from 'react-native-modalbox';
 
-import {ThemeContext} from './../AppContainer';
+import {ThemeContext} from '../contexts/ThemeContext';
 import {ThemeConstants} from './../constants/ThemeConstants';
 
 class MapScreen extends React.Component {
@@ -23,9 +23,7 @@ class MapScreen extends React.Component {
     };
     return (
       <ThemeContext.Consumer>
-        {({theme}) => {
-          let t = ThemeConstants[theme];
-          return (
+        {({t}) => 
             <BusTramApiContext.Consumer>
               {({vehicles, setMapRegion, radar, toggleRadar}) => {
                 return (
@@ -109,8 +107,7 @@ class MapScreen extends React.Component {
                 );
               }}
             </BusTramApiContext.Consumer>
-          );
-        }}
+        }
       </ThemeContext.Consumer>
     );
   }
