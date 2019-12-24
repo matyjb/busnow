@@ -7,7 +7,7 @@ import {Fab, Icon, Button, Text} from 'native-base';
 import Modal from 'react-native-modalbox';
 
 import {ThemeContext} from '../contexts/ThemeContext';
-import {ThemeConstants} from './../constants/ThemeConstants';
+import {ThemeConstants} from '../constants/ThemeConstants';
 
 class MapScreen extends React.Component {
   static navigationOptions = {

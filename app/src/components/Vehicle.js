@@ -4,7 +4,7 @@ import {AnimatedRegion, Marker} from 'react-native-maps';
 import PropTypes from 'prop-types';
 
 import { ThemeContext } from '../contexts/ThemeContext';
-import {ThemeConstants} from './../constants/ThemeConstants';
+import {ThemeConstants} from '../constants/ThemeConstants';
 
 const screen = Dimensions.get('window');
 

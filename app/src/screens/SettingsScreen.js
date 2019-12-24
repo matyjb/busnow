@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {ThemeConstants} from './../constants/ThemeConstants';
+import {ThemeConstants} from '../constants/ThemeConstants';
 import {Container, Button, Text, Content} from 'native-base';
 import { ThemeContext } from '../contexts/ThemeContext';
 

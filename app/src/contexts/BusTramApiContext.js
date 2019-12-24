@@ -1,5 +1,5 @@
 import React, { Component, createContext } from 'react';
-import BuildConfig from 'react-native-config';
+import WarsawApi from '../WarsawApi';
 
 var moment = require('moment');
 
@@ -52,7 +52,7 @@ export default class BusTramApiContextProvider extends Component {
     if(true){ //temp for dev
       var timeNow = moment();
       for (const i of this.state.lines) {
-        var line = await this.getLine(i, i < 100 ? 2 : 1);
+        var line = await WarsawApi.getLine(i, i < 100 ? 2 : 1);
         line.forEach(v => {
           var timeVehicle = moment(v.Time);
           var duration = moment.duration(timeNow.diff(timeVehicle));
@@ -64,23 +64,6 @@ export default class BusTramApiContextProvider extends Component {
     }
     this.setState({ vehicles: vehiclesFiltered })
   }
-  async getLine(line, type){
-    var apikey = BuildConfig.WARSAW_API_KEY;
-    // var type = "1";
-    var resource_id = "f2e5503e927d-4ad3-9500-4ab9e55deb59";
-    var result = [];
-    await fetch("https://api.um.warszawa.pl/api/action/busestrams_get/?resource_id="+resource_id+"&apikey="+apikey+"&type="+type+"&line="+line,{method: "get"})
-    .then(res => res.json())
-    .then(res => {
-      if(Array.isArray(res.result)){
-        result = res.result;
-      }
-      else
-      console.log("error1: ", res.result)
-    }).catch(error => console.log("error2: ", error))
-    return result;
-  }
-
 
   componentDidMount() {
     this.updateVehicles();
