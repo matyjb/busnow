@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import {Icon, Button, Fab} from 'native-base';
 import {ThemeContext} from '../contexts/ThemeContext';
 import {BusTramApiContext} from '../contexts/BusTramApiContext';
+import {withNavigation} from 'react-navigation';
 
-export default class FabMapScreen extends Component {
+class FabMapScreen extends Component {
   render() {
     return (
       <ThemeContext.Consumer>
@@ -53,3 +54,4 @@ export default class FabMapScreen extends Component {
     );
   }
 }
+export default withNavigation(FabMapScreen);

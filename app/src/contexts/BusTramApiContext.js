@@ -7,11 +7,15 @@ export const BusTramApiContext = createContext();
 
 export default class BusTramApiContextProvider extends Component {
   state = {
+    allStops: [],
+    stopsInBounds: [],
     vehicles: [],
     lines: ['709', '739', '727', '185', '209', '401', '193', '737'],
     mapRegion: {
+      //lat lon is center of screen
       latitude: 52.122801,
       longitude: 21.018324,
+      // for example: left edge of screen is lon - londelta/2
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     },
@@ -23,6 +27,56 @@ export default class BusTramApiContextProvider extends Component {
       radiusKMs: 1.5,
       isOn: false,
     },
+  };
+
+  _setStopsInBounds = () => {
+    let s = this.state.allStops.filter(e => {
+      if (
+        Math.abs(e.lat - this.state.mapRegion.latitude) <
+          this.state.mapRegion.latitudeDelta &&
+        Math.abs(e.lon - this.state.mapRegion.longitude) <
+          this.state.mapRegion.longitudeDelta
+      )
+        return true;
+      return false;
+    });
+    console.log('in bounds: ', s.length);
+
+    this.setState({stopsInBounds: s});
+  };
+
+  downloadAllStops = async () => {
+    let stops = await WarsawApi.getStops();
+    console.log('downloaded all stops');
+    let clustered = stops
+      .reduce((rv, x) => {
+        let v = x.unit;
+        let el = rv.find(r => r && r.unit === v);
+        if (el) {
+          el.values.push(x);
+        } else {
+          rv.push({unit: v, values: [x]});
+        }
+        return rv;
+      }, [])
+      .map(claster => {
+        let l = claster.values.reduce(
+          (a, x) => {
+            return {sumlat: a.sumlat + x.lat, sumlon: a.sumlon + x.lon};
+          },
+          {sumlat: 0, sumlon: 0}
+        );
+        return {
+          name: claster.values[0].name,
+          unit: claster.values[0].unit,
+          lat: l.sumlat / claster.values.length,
+          lon: l.sumlon / claster.values.length,
+          stops: claster.values,
+        };
+      });
+    console.log('clustered all stops', clustered.length);
+
+    this.setState({allStops: clustered}, this._setStopsInBounds);
   };
 
   toggleRadar = () => {
@@ -39,12 +93,12 @@ export default class BusTramApiContextProvider extends Component {
     });
   };
   setMapRegion = newRegion => {
-    this.setState({mapRegion: newRegion});
+    this.setState({mapRegion: newRegion}, this._setStopsInBounds);
   };
 
-  setRadarCoordinates = newCoordinates => {
-    this.setState({radar: {...this.state.radar, coordinates: newCoordinates}});
-  };
+  // setRadarCoordinates = newCoordinates => {
+  //   this.setState({radar: {...this.state.radar, coordinates: newCoordinates}});
+  // };
   setRadarRadius = newRadius => {
     this.setState({radar: {...this.state.radar, radiusKMs: newRadius}});
   };
@@ -55,7 +109,7 @@ export default class BusTramApiContextProvider extends Component {
     else linesSet.add(line);
     this.setState({lines: [...linesSet]});
   };
-  updateVehicles = async () => {
+  _updateVehicles = async () => {
     var vehiclesFiltered = [];
     if (true) {
       //temp for dev
@@ -74,8 +128,9 @@ export default class BusTramApiContextProvider extends Component {
   };
 
   componentDidMount() {
-    this.updateVehicles();
-    this.interval = setInterval(this.updateVehicles, 10000);
+    this.downloadAllStops();
+    this._updateVehicles();
+    this.interval = setInterval(this._updateVehicles, 10000);
   }
   componentWillUnmount() {
     clearInterval(this.interval);
@@ -84,9 +139,10 @@ export default class BusTramApiContextProvider extends Component {
   render() {
     var value = {
       ...this.state,
-      updateVehicles: this.updateVehicles,
+      // stopsInBounds: this.stopsInBounds,
+      // updateVehicles: this._updateVehicles,
       toggleLine: this.toggleLine,
-      setRadarCoordinates: this.setRadarCoordinates,
+      // setRadarCoordinates: this.setRadarCoordinates,
       setRadarRadius: this.setRadarRadius,
       toggleRadar: this.toggleRadar,
       setMapRegion: this.setMapRegion,
