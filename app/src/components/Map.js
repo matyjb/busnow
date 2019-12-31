@@ -3,7 +3,9 @@ import {StyleSheet, View} from 'react-native';
 import {ThemeContext} from '../contexts/ThemeContext';
 import {BusTramApiContext} from '../contexts/BusTramApiContext';
 import MapView, {Circle, Marker} from 'react-native-maps';
-import Vehicle from './Vehicle';
+import VehicleMarker from './VehicleMarker';
+import StopMarker from './StopMarker';
+import StopClusterMarker from './StopClusterMarker';
 
 export default class Map extends Component {
   // 0.013
@@ -11,12 +13,7 @@ export default class Map extends Component {
   getStopsMarkers(stops, clasters) {
     if (clasters) {
       return stops.map(c => (
-        <Marker
-          key={c.unit}
-          coordinate={{latitude: c.lat, longitude: c.lon}}
-          title={c.name}
-          description={c.unit}
-        />
+        <StopClusterMarker style={{zIndex: 1}} cluster={c} />
       ));
     } else {
       let output = [];
@@ -25,14 +22,7 @@ export default class Map extends Component {
           output.push(stop);
         });
       });
-      return output.map(s => (
-        <Marker
-          key={s.unit + ':' + s.nr}
-          coordinate={{latitude: s.lat, longitude: s.lon}}
-          title={s.name + ' ' + s.nr}
-          description={s.unit}
-        />
-      ));
+      return output.map(s => <StopMarker style={{zIndex: 1}} stop={s} />);
     }
   }
 
@@ -66,7 +56,8 @@ export default class Map extends Component {
                   onRegionChangeComplete={setMapRegion}
                 >
                   {vehicles.map(v => (
-                    <Vehicle
+                    <VehicleMarker
+                      style={{zIndex: 2}}
                       key={v.Lines + '-' + v.Brigade}
                       coordinates={{latitude: v.Lat, longitude: v.Lon}}
                       line={v.Lines}
@@ -80,7 +71,7 @@ export default class Map extends Component {
                     )}
                   {radar.isOn && (
                     <Circle
-                      style={{zIndex: 999}}
+                      style={{zIndex: 0}}
                       center={radar.coordinates}
                       radius={radar.radiusKMs * 1000}
                       strokeWidth={1}

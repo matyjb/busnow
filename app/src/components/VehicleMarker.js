@@ -11,7 +11,7 @@ const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-class Vehicle extends Component {
+class VehicleMarker extends Component {
   state = {
     coordinate: new AnimatedRegion({
       latitude: this.props.coordinates.latitude,
@@ -38,6 +38,7 @@ class Vehicle extends Component {
   render() {
     return (
       <Marker.Animated
+        style={this.props.style}
         ref={marker => {
           this.marker = marker;
         }}
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
   },
 });
 
-Vehicle.propTypes = {
+VehicleMarker.propTypes = {
   coordinates: PropTypes.exact({
     latitude: PropTypes.number,
     longitude: PropTypes.number,
@@ -94,4 +95,4 @@ Vehicle.propTypes = {
   brigade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
-export default Vehicle;
+export default VehicleMarker;
