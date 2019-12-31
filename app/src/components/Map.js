@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ThemeContext} from '../contexts/ThemeContext';
 import {BusTramApiContext} from '../contexts/BusTramApiContext';
-import MapView, {Circle, Marker} from 'react-native-maps';
+import MapView, {Circle} from 'react-native-maps';
 import VehicleMarker from './VehicleMarker';
 import StopMarker from './StopMarker';
 import StopClusterMarker from './StopClusterMarker';

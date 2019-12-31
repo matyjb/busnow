@@ -6,7 +6,7 @@ export default class BottomModal extends Component {
   render() {
     return (
       <Modal
-        style={{height: 300, zIndex: 1}}
+        style={{...this.props.style, height: 300}}
         position={'bottom'}
         backButtonClose
         ref={this.props._modalref}

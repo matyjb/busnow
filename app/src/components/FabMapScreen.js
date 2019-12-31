@@ -13,7 +13,7 @@ class FabMapScreen extends Component {
             {({toggleRadar}) => (
               <Fab
                 active={true}
-                style={{backgroundColor: t.accentColor}}
+                style={{...this.props.style, backgroundColor: t.accentColor}}
                 position="bottomRight"
                 onPress={() => toggleRadar()}
               >
@@ -24,6 +24,7 @@ class FabMapScreen extends Component {
                 />
                 <Button
                   style={{
+                    ...this.props.style,
                     backgroundColor: t.accentColor,
                     marginBottom: 14,
                   }}
@@ -35,13 +36,13 @@ class FabMapScreen extends Component {
                   />
                 </Button>
                 <Button
-                  style={{backgroundColor: t.accentColor}}
+                  style={{...this.props.style, backgroundColor: t.accentColor}}
                   onPress={() => this.props.navigation.navigate('Settings')}
                 >
                   <Icon name="md-settings" style={{color: t.primaryColor}} />
                 </Button>
                 <Button
-                  style={{backgroundColor: t.accentColor}}
+                  style={{...this.props.style, backgroundColor: t.accentColor}}
                   onPress={() => this.props.modalref.open()}
                 >
                   <Icon name="md-menu" style={{color: t.primaryColor}} />

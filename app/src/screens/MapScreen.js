@@ -13,7 +13,7 @@ class MapScreen extends React.Component {
     return (
       <>
         <Map />
-        <FabMapScreen modalref={this._modal} />
+        <FabMapScreen style={{elevation: 0}} modalref={this._modal} />
         <BottomModal
           _modalref={ref => {
             this._modal = ref;
