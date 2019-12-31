@@ -1,27 +1,55 @@
 import React, {Component} from 'react';
-import {View} from 'react-native';
 import {Icon, Button, Fab} from 'native-base';
+import {ThemeContext} from '../contexts/ThemeContext';
+import {BusTramApiContext} from '../contexts/BusTramApiContext';
 
 export default class FabMapScreen extends Component {
   render() {
     return (
-      <View style={{flex: 1}}>
-        <Fab
-          active={true}
-          containerStyle={{}}
-          style={{backgroundColor: '#5067FF'}}
-          position="bottomRight"
-          onPress={() => {}}
-        >
-          <Icon name="radar" type="MaterialCommunityIcons" />
-          <Button style={{backgroundColor: '#34A34F', marginBottom: 14}}>
-            <Icon name="gps-fixed" type="MaterialIcons" />
-          </Button>
-          <Button style={{backgroundColor: '#3B5998'}}>
-            <Icon name="md-menu" />
-          </Button>
-        </Fab>
-      </View>
+      <ThemeContext.Consumer>
+        {({t}) => (
+          <BusTramApiContext.Consumer>
+            {({toggleRadar}) => (
+              <Fab
+                active={true}
+                style={{backgroundColor: t.accentColor}}
+                position="bottomRight"
+                onPress={() => toggleRadar()}
+              >
+                <Icon
+                  name="radar"
+                  type="MaterialCommunityIcons"
+                  style={{color: t.primaryColor}}
+                />
+                <Button
+                  style={{
+                    backgroundColor: t.accentColor,
+                    marginBottom: 14,
+                  }}
+                >
+                  <Icon
+                    name="gps-fixed"
+                    type="MaterialIcons"
+                    style={{color: t.primaryColor}}
+                  />
+                </Button>
+                <Button
+                  style={{backgroundColor: t.accentColor}}
+                  onPress={() => this.props.navigation.navigate('Settings')}
+                >
+                  <Icon name="md-settings" style={{color: t.primaryColor}} />
+                </Button>
+                <Button
+                  style={{backgroundColor: t.accentColor}}
+                  onPress={() => this.props.modalref.open()}
+                >
+                  <Icon name="md-menu" style={{color: t.primaryColor}} />
+                </Button>
+              </Fab>
+            )}
+          </BusTramApiContext.Consumer>
+        )}
+      </ThemeContext.Consumer>
     );
   }
 }
