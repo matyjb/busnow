@@ -30,6 +30,10 @@ export default class BusTramApiContextProvider extends Component {
     },
   };
 
+  setMapRef = r => {
+    this.map = r;
+  };
+
   _setStopsInBounds = () => {
     let s = this.state.allStops.filter(e => {
       if (
@@ -166,6 +170,7 @@ export default class BusTramApiContextProvider extends Component {
   render() {
     var value = {
       ...this.state,
+      setMapRef: this.setMapRef,
       // stopsInBounds: this.stopsInBounds,
       // updateVehicles: this._updateVehicles,
       toggleLine: this.toggleLine,

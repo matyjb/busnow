@@ -47,20 +47,23 @@ export default class Map extends Component {
       <ThemeContext.Consumer>
         {({t}) => (
           <BusTramApiContext.Consumer>
-            {({vehicles, setMapRegion, radar, stopsInBounds, mapRegion}) => (
+            {({
+              vehicles,
+              setMapRegion,
+              radar,
+              stopsInBounds,
+              mapRegion,
+              setMapRef,
+            }) => (
               <View style={styles.container}>
                 <MapView
-                  ref={ref => {
-                    this.map = ref;
-                  }}
+                  ref={setMapRef}
                   customMapStyle={t.mapStyle}
                   initialRegion={initRegion}
                   showsCompass={true}
                   rotateEnabled={false}
                   style={{...StyleSheet.absoluteFillObject}}
-                  onRegionChangeComplete={nr => {
-                    setMapRegion(nr);
-                  }}
+                  onRegionChangeComplete={setMapRegion}
                 >
                   {vehicles.map(v => (
                     <Vehicle
