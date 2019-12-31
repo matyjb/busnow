@@ -1,5 +1,6 @@
 import React, {Component, createContext} from 'react';
 import WarsawApi from '../WarsawApi';
+import AsyncStorage from '@react-native-community/async-storage';
 
 var moment = require('moment');
 
@@ -40,8 +41,6 @@ export default class BusTramApiContextProvider extends Component {
         return true;
       return false;
     });
-    console.log('in bounds: ', s.length);
-
     this.setState({stopsInBounds: s});
   };
 
@@ -76,7 +75,27 @@ export default class BusTramApiContextProvider extends Component {
       });
     console.log('clustered all stops', clustered.length);
 
-    this.setState({allStops: clustered}, this._setStopsInBounds);
+    this.setState({allStops: clustered});
+  };
+
+  _loadStopsFromStorage = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@Storage:stops');
+      if (value !== null) {
+        this.setState({allStops: JSON.parse(value)});
+      }
+      console.log('loaded stops');
+    } catch (error) {
+      console.log('error loading stops from storage');
+    }
+  };
+  _saveStopsToStorage = async stops => {
+    try {
+      await AsyncStorage.setItem('@Storage:stops', JSON.stringify(stops));
+      console.log('saved stops');
+    } catch (error) {
+      console.log('error saving stops to storage');
+    }
   };
 
   toggleRadar = () => {
@@ -127,8 +146,16 @@ export default class BusTramApiContextProvider extends Component {
     this.setState({vehicles: vehiclesFiltered});
   };
 
-  componentDidMount() {
-    this.downloadAllStops();
+  async componentDidMount() {
+    //allStops
+    if ((await AsyncStorage.getItem('@Storage:stops')) == null) {
+      await this.downloadAllStops();
+      await this._saveStopsToStorage(this.state.allStops);
+    } else {
+      await this._loadStopsFromStorage();
+    }
+
+    //
     this._updateVehicles();
     this.interval = setInterval(this._updateVehicles, 10000);
   }
