@@ -45,7 +45,7 @@ class MapScreen extends React.Component {
       lone += londiff / 3;
       lons -= londiff / 3;
       //
-      
+
       let stopsMarkersVisible = this.state.stops.filter(e => {
         if (lons < e.lon && e.lon < lone && lats < e.lat && e.lat < late)
           return true;
@@ -76,7 +76,7 @@ class MapScreen extends React.Component {
             (a, x) => {
               return {sumlat: a.sumlat + x.lat, sumlon: a.sumlon + x.lon};
             },
-            {sumlat: 0, sumlon: 0},
+            {sumlat: 0, sumlon: 0}
           );
           return {
             ...unit.values[0],
@@ -132,7 +132,8 @@ class MapScreen extends React.Component {
                       onRegionChangeComplete={nr => {
                         setMapRegion(nr);
                         this.onRegionChangeComplete();
-                      }}>
+                      }}
+                    >
                       {vehicles.map(v => (
                         <Vehicle
                           key={v.Lines + '-' + v.Brigade}
@@ -159,7 +160,8 @@ class MapScreen extends React.Component {
                     containerStyle={{}}
                     style={{backgroundColor: t.accentColor}}
                     position="bottomRight"
-                    onPress={() => toggleRadar()}>
+                    onPress={() => toggleRadar()}
+                  >
                     <Icon
                       name="radar"
                       type="MaterialCommunityIcons"
@@ -169,7 +171,8 @@ class MapScreen extends React.Component {
                       style={{
                         backgroundColor: t.accentColor,
                         marginBottom: 14,
-                      }}>
+                      }}
+                    >
                       <Icon
                         name="gps-fixed"
                         type="MaterialIcons"
@@ -178,9 +181,8 @@ class MapScreen extends React.Component {
                     </Button>
                     <Button
                       style={{backgroundColor: t.accentColor}}
-                      onPress={() =>
-                        this.props.navigation.navigate('Settings')
-                      }>
+                      onPress={() => this.props.navigation.navigate('Settings')}
+                    >
                       <Icon
                         name="md-settings"
                         style={{color: t.primaryColor}}
@@ -188,7 +190,8 @@ class MapScreen extends React.Component {
                     </Button>
                     <Button
                       style={{backgroundColor: t.accentColor}}
-                      onPress={() => this._modal.open()}>
+                      onPress={() => this._modal.open()}
+                    >
                       <Icon name="md-menu" style={{color: t.primaryColor}} />
                     </Button>
                   </Fab>
@@ -198,7 +201,8 @@ class MapScreen extends React.Component {
                     backButtonClose
                     ref={ref => {
                       this._modal = ref;
-                    }}>
+                    }}
+                  >
                     <Text>Modal on bottom with backdrop</Text>
                   </Modal>
                 </>

@@ -38,8 +38,7 @@ fs.writeFile('przystanki_new2.json', jsonContent, () => {
 
     newjson3.push(e);
   }
-  console.log("stary", newjson3.length);
-  
+  console.log('stary', newjson3.length);
 
   var jsonContent2 = JSON.stringify(newjson3);
   fs.writeFile('przystanki_new2.json', jsonContent2, () => {});
@@ -55,44 +54,48 @@ fs.writeFile('przystanki_new2.json', jsonContent, () => {
 });
 
 console.log(oldjson.result.length);
-      //mapping to format
-      let mapped = oldjson.result.map(e => {
-        return {
-          unit: e.values[0].value,
-          nr: e.values[1].value,
-          name: e.values[2].value,
-          // street_id: e.values[3].value,
-          lat: Number(e.values[4].value),
-          lon: Number(e.values[5].value),
-          direction:
-            e.values[6].value == '______________________________'
-              ? ''
-              : e.values[6].value,
-          operatesSince: e.values[7].value,
-        };
-      }).filter(e => {
-        
-        if (e.name == '' ||
-          e.lat == null || isNaN(e.lat) ||
-          e.lon == null || isNaN(e.lon)) {
-            // console.log(e);
-            
-            return false;
-          }
-        return true;
-      });
-      /////
-      console.log(mapped.length);
-      // take newest
-      let newest = [];
-      for (let i = 0; i < mapped.length - 1; i++) {
-        const e = mapped[i];
-        const next = mapped[i + 1];
-        // same stop
-        if (e.name == next.name && e.nr == next.nr && e.unit == next.unit)
-          if (Date.parse(e.operatesSince) < Date.parse(next.operatesSince))
-            continue;
-    
-            newest.push(e);
-      }
-      console.log(newest.length);
+//mapping to format
+let mapped = oldjson.result
+  .map(e => {
+    return {
+      unit: e.values[0].value,
+      nr: e.values[1].value,
+      name: e.values[2].value,
+      // street_id: e.values[3].value,
+      lat: Number(e.values[4].value),
+      lon: Number(e.values[5].value),
+      direction:
+        e.values[6].value == '______________________________'
+          ? ''
+          : e.values[6].value,
+      operatesSince: e.values[7].value,
+    };
+  })
+  .filter(e => {
+    if (
+      e.name == '' ||
+      e.lat == null ||
+      isNaN(e.lat) ||
+      e.lon == null ||
+      isNaN(e.lon)
+    ) {
+      // console.log(e);
+
+      return false;
+    }
+    return true;
+  });
+/////
+console.log(mapped.length);
+// take newest
+let newest = [];
+for (let i = 0; i < mapped.length - 1; i++) {
+  const e = mapped[i];
+  const next = mapped[i + 1];
+  // same stop
+  if (e.name == next.name && e.nr == next.nr && e.unit == next.unit)
+    if (Date.parse(e.operatesSince) < Date.parse(next.operatesSince)) continue;
+
+  newest.push(e);
+}
+console.log(newest.length);

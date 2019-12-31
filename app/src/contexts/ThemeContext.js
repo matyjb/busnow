@@ -1,6 +1,6 @@
-import React, { Component, createContext } from 'react';
+import React, {Component, createContext} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
-import { ThemeConstants } from '../constants/ThemeConstants';
+import {ThemeConstants} from '../constants/ThemeConstants';
 
 export const ThemeContext = createContext();
 
@@ -37,14 +37,14 @@ export default class ThemeContextProvider extends Component {
 
   render() {
     var value = {
-      theme: this.state.theme, 
+      theme: this.state.theme,
       toggleTheme: this.toggleTheme,
-      t: ThemeConstants[this.state.theme]
-    }
+      t: ThemeConstants[this.state.theme],
+    };
     return (
       <ThemeContext.Provider value={value}>
         {this.props.children}
       </ThemeContext.Provider>
-    )
+    );
   }
 }

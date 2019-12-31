@@ -11,7 +11,8 @@ export default class FabMapScreen extends Component {
           containerStyle={{}}
           style={{backgroundColor: '#5067FF'}}
           position="bottomRight"
-          onPress={() => {}}>
+          onPress={() => {}}
+        >
           <Icon name="radar" type="MaterialCommunityIcons" />
           <Button style={{backgroundColor: '#34A34F', marginBottom: 14}}>
             <Icon name="gps-fixed" type="MaterialIcons" />

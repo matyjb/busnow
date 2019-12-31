@@ -3,8 +3,7 @@ import {Text, StyleSheet, View, Dimensions} from 'react-native';
 import {AnimatedRegion, Marker} from 'react-native-maps';
 import PropTypes from 'prop-types';
 
-import { ThemeContext } from '../contexts/ThemeContext';
-import {ThemeConstants} from '../constants/ThemeConstants';
+import {ThemeContext} from '../contexts/ThemeContext';
 
 const screen = Dimensions.get('window');
 
@@ -46,17 +45,18 @@ class Vehicle extends Component {
         tracksViewChanges={false}
       >
         <ThemeContext.Consumer>
-          {({t}) => 
-              <View
-                style={{
-                  ...styles.container,
-                  backgroundColor: t.vehicleBgColor,
-                }}>
-                <Text style={{...styles.text, color: t.textColor}}>
-                  {this.props.line}
-                </Text>
-              </View>
-          }
+          {({t}) => (
+            <View
+              style={{
+                ...styles.container,
+                backgroundColor: t.vehicleBgColor,
+              }}
+            >
+              <Text style={{...styles.text, color: t.textColor}}>
+                {this.props.line}
+              </Text>
+            </View>
+          )}
         </ThemeContext.Consumer>
       </Marker.Animated>
     );
