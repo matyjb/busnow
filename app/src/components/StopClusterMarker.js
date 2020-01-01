@@ -6,10 +6,10 @@ const StopClusterMarker = props => {
   return (
     <Marker
       style={props.style}
-      key={props.cluster.unit}
       coordinate={{latitude: props.cluster.lat, longitude: props.cluster.lon}}
       title={props.cluster.name}
       description={props.cluster.unit}
+      tracksViewChanges={false}
     />
   );
 };

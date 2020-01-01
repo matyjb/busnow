@@ -6,10 +6,10 @@ const StopMarker = props => {
   return (
     <Marker
       style={props.style}
-      key={props.stop.unit + ':' + props.stop.nr}
       coordinate={{latitude: props.stop.lat, longitude: props.stop.lon}}
       title={props.stop.name + ' ' + props.stop.nr}
       description={props.stop.unit}
+      tracksViewChanges={false}
     />
   );
 };

@@ -1,11 +1,18 @@
 import React, {Component} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, PermissionsAndroid, Platform} from 'react-native';
 import {ThemeContext} from '../contexts/ThemeContext';
 import {BusTramApiContext} from '../contexts/BusTramApiContext';
 import MapView, {Circle} from 'react-native-maps';
 import VehicleMarker from './VehicleMarker';
 import StopMarker from './StopMarker';
 import StopClusterMarker from './StopClusterMarker';
+import Geolocation from '@react-native-community/geolocation';
+
+const GEOLOCATION_OPTIONS = {
+  enableHighAccuracy: true,
+  timeout: 20000,
+  maximumAge: 1000,
+};
 
 export default class Map extends Component {
   // 0.013
@@ -13,7 +20,7 @@ export default class Map extends Component {
   getStopsMarkers(stops, clasters) {
     if (clasters) {
       return stops.map(c => (
-        <StopClusterMarker style={{zIndex: 1}} cluster={c} />
+        <StopClusterMarker key={c.unit} style={{zIndex: 1}} cluster={c} />
       ));
     } else {
       let output = [];
@@ -22,7 +29,46 @@ export default class Map extends Component {
           output.push(stop);
         });
       });
-      return output.map(s => <StopMarker style={{zIndex: 1}} stop={s} />);
+      return output.map(s => (
+        <StopMarker key={s.unit + ':' + s.nr} style={{zIndex: 1}} stop={s} />
+      ));
+    }
+  }
+
+  componentDidMount() {
+    this.mounted = true;
+
+    if (Platform.OS === 'android') {
+      PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+      ).then(granted => {
+        if (granted && this.mounted) {
+          this.watchLocation();
+        }
+      });
+    } else {
+      this.watchLocation();
+    }
+  }
+
+  watchLocation() {
+    this.watchID = Geolocation.watchPosition(
+      position => {
+        // const myLastPosition = this.state.myPosition;
+        // const myPosition = position.coords;
+        // if (!isEqual(myPosition, myLastPosition)) {
+        //   this.setState({myPosition});
+        // }
+      },
+      null,
+      GEOLOCATION_OPTIONS
+    );
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+    if (this.watchID) {
+      Geolocation.clearWatch(this.watchID);
     }
   }
 
@@ -54,6 +100,7 @@ export default class Map extends Component {
                   rotateEnabled={false}
                   style={{...StyleSheet.absoluteFillObject}}
                   onRegionChangeComplete={setMapRegion}
+                  showsUserLocation={true}
                 >
                   {vehicles.map(v => (
                     <VehicleMarker
@@ -69,6 +116,7 @@ export default class Map extends Component {
                       stopsInBounds,
                       mapRegion.latitudeDelta > 0.013
                     )}
+                  {/* <UserLocationMarker /> */}
                   {radar.isOn && (
                     <Circle
                       style={{zIndex: 0}}
