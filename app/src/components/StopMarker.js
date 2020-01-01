@@ -1,16 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Marker} from 'react-native-maps';
+import {Marker, Callout} from 'react-native-maps';
+import {BusTramApiContext} from '../contexts/BusTramApiContext';
+import {Text} from 'native-base';
 
 const StopMarker = props => {
   return (
-    <Marker
-      style={props.style}
-      coordinate={{latitude: props.stop.lat, longitude: props.stop.lon}}
-      title={props.stop.name + ' ' + props.stop.nr}
-      description={props.stop.unit}
-      tracksViewChanges={false}
-    />
+    <BusTramApiContext.Consumer>
+      {({selectMarker}) => (
+        <Marker
+          style={props.style}
+          coordinate={{latitude: props.stop.lat, longitude: props.stop.lon}}
+          title={props.stop.name + ' ' + props.stop.nr}
+          description={props.stop.unit}
+          tracksViewChanges={false}
+          onPress={() => selectMarker(props.stop)}
+        >
+          {/* workaround to hide callout */}
+          <Callout tooltip>
+            <Text></Text>
+          </Callout>
+        </Marker>
+      )}
+    </BusTramApiContext.Consumer>
   );
 };
 

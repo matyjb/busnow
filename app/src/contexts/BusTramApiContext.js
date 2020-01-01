@@ -28,10 +28,25 @@ export default class BusTramApiContextProvider extends Component {
       radiusKMs: 1.5,
       isOn: false,
     },
+    selectedMarker: null,
   };
 
   setMapRef = r => {
     this.map = r;
+  };
+
+  selectMarker = marker => {
+    this.setState({selectedMarker: marker});
+  };
+
+  fitMapToClasterStops = claster => {
+    let m = claster.stops.map(e => {
+      return {latitude: e.lat, longitude: e.lon};
+    });
+    this.map.fitToCoordinates(m, {
+      edgePadding: {top: 300, right: 200, bottom: 300, left: 200},
+      animated: true,
+    });
   };
 
   _setStopsInBounds = () => {
@@ -171,6 +186,8 @@ export default class BusTramApiContextProvider extends Component {
     var value = {
       ...this.state,
       setMapRef: this.setMapRef,
+      fitMapToClasterStops: this.fitMapToClasterStops,
+      selectMarker: this.selectMarker,
       // stopsInBounds: this.stopsInBounds,
       // updateVehicles: this._updateVehicles,
       toggleLine: this.toggleLine,

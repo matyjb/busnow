@@ -90,6 +90,7 @@ export default class Map extends Component {
               stopsInBounds,
               mapRegion,
               setMapRef,
+              selectMarker,
             }) => (
               <View style={styles.container}>
                 <MapView
@@ -101,14 +102,16 @@ export default class Map extends Component {
                   style={{...StyleSheet.absoluteFillObject}}
                   onRegionChangeComplete={setMapRegion}
                   showsUserLocation={true}
+                  onPress={() => selectMarker(null)}
                 >
                   {vehicles.map(v => (
                     <VehicleMarker
                       style={{zIndex: 2}}
-                      key={v.Lines + '-' + v.Brigade}
-                      coordinates={{latitude: v.Lat, longitude: v.Lon}}
-                      line={v.Lines}
-                      brigade={v.Brigade}
+                      key={v.VehicleNumber}
+                      // coordinates={{latitude: v.Lat, longitude: v.Lon}}
+                      // line={v.Lines}
+                      // brigade={v.Brigade}
+                      vehicle={v}
                     />
                   ))}
                   {mapRegion.latitudeDelta < 0.04 &&
