@@ -15,8 +15,10 @@ const GEOLOCATION_OPTIONS = {
 };
 
 export default class Map extends Component {
-  // 0.013
-  // 0.04
+  state = {
+    // vehicleMarkers: [],
+    busStopsMarkers: [],
+  };
   getStopsMarkers(stops, clasters) {
     if (clasters) {
       return stops.map(c => (
@@ -72,6 +74,13 @@ export default class Map extends Component {
     }
   }
 
+  updateBusStopsMarkers = async (mapRegion, stopsInBounds) => {
+    let markers =
+      mapRegion.latitudeDelta < 0.04 &&
+      this.getStopsMarkers(stopsInBounds, mapRegion.latitudeDelta > 0.013);
+    this.setState({busStopsMarkers: markers});
+  };
+
   render() {
     const initRegion = {
       latitude: 52.122801,
@@ -88,7 +97,6 @@ export default class Map extends Component {
               setMapRegion,
               radar,
               stopsInBounds,
-              mapRegion,
               setMapRef,
               selectMarker,
             }) => (
@@ -99,7 +107,10 @@ export default class Map extends Component {
                   initialRegion={initRegion}
                   rotateEnabled={false}
                   style={{...StyleSheet.absoluteFillObject}}
-                  onRegionChangeComplete={setMapRegion}
+                  onRegionChangeComplete={mr => {
+                    this.updateBusStopsMarkers(mr, stopsInBounds);
+                    setMapRegion(mr);
+                  }}
                   showsUserLocation={true}
                   onPress={() => selectMarker(null)}
                 >
@@ -110,11 +121,7 @@ export default class Map extends Component {
                       vehicle={v}
                     />
                   ))}
-                  {mapRegion.latitudeDelta < 0.04 &&
-                    this.getStopsMarkers(
-                      stopsInBounds,
-                      mapRegion.latitudeDelta > 0.013
-                    )}
+                  {this.state.busStopsMarkers}
                   {/* <UserLocationMarker /> */}
                   {radar.isOn && (
                     <Circle
