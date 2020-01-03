@@ -3,6 +3,7 @@ import React from 'react';
 import Map from '../components/Map';
 import FabMapScreen from '../components/FabMapScreen';
 import BottomModal from '../components/BottomModal';
+import InfoBox from '../components/InfoBox';
 
 class MapScreen extends React.Component {
   static navigationOptions = {
@@ -13,6 +14,7 @@ class MapScreen extends React.Component {
     return (
       <>
         <Map />
+        <InfoBox />
         <FabMapScreen style={{elevation: 0}} modalref={this._modal} />
         <BottomModal
           _modalref={ref => {

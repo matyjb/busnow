@@ -162,7 +162,21 @@ export default class BusTramApiContextProvider extends Component {
         });
       }
     }
-    this.setState({vehicles: vehiclesFiltered});
+
+    // update selectedMarker that is a bus
+    let newstate = {vehicles: vehiclesFiltered};
+    if (this.state.selectedMarker && this.state.selectedMarker.VehicleNumber) {
+      let t = vehiclesFiltered.filter(
+        e => e.VehicleNumber == this.state.selectedMarker.VehicleNumber
+      );
+      if (t.length > 0) {
+        this.setState({...newstate, selectedMarker: t[0]});
+      } else {
+        this.setState({...newstate, selectedMarker: null});
+      }
+    } else {
+      this.setState(newstate);
+    }
   };
 
   async componentDidMount() {
