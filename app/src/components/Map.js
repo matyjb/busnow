@@ -97,7 +97,6 @@ export default class Map extends Component {
                   ref={setMapRef}
                   customMapStyle={t.mapStyle}
                   initialRegion={initRegion}
-                  showsCompass={true}
                   rotateEnabled={false}
                   style={{...StyleSheet.absoluteFillObject}}
                   onRegionChangeComplete={setMapRegion}
@@ -108,9 +107,6 @@ export default class Map extends Component {
                     <VehicleMarker
                       style={{zIndex: 2}}
                       key={v.VehicleNumber}
-                      // coordinates={{latitude: v.Lat, longitude: v.Lon}}
-                      // line={v.Lines}
-                      // brigade={v.Brigade}
                       vehicle={v}
                     />
                   ))}
