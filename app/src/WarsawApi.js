@@ -141,6 +141,15 @@ class WarsawApi extends React.Component {
       busStopNr +
       '&apikey=' +
       WarsawApi.apikey;
+
+    var res = await WarsawApi._fetchApi(url, 'getStopLines');
+
+    if (Array.isArray(res.result)) {
+      return res.result;
+    } else {
+      console.log('[error] getStopLines: ', res);
+      return [];
+    }
   }
 
   static async getStopLineSchedule(busStopId, busStopNr, line) {
@@ -156,6 +165,15 @@ class WarsawApi extends React.Component {
       line +
       '&apikey=' +
       WarsawApi.apikey;
+
+    var res = await WarsawApi._fetchApi(url, 'getStopLineSchedule');
+
+    if (Array.isArray(res.result)) {
+      return res.result;
+    } else {
+      console.log('[error] getStopLineSchedule: ', res);
+      return [];
+    }
   }
 }
 export default WarsawApi;
