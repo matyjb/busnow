@@ -9,7 +9,6 @@ export default class LineTag extends Component {
     if (arrivalTimeFormatted >= 60)
       arrivalTimeFormatted = Math.floor(arrivalTimeFormatted / 60) + ' godz';
     else arrivalTimeFormatted += ' min';
-
     return (
       <ThemeContext.Consumer>
         {({t}) => (
@@ -27,9 +26,11 @@ export default class LineTag extends Component {
             <Text style={{...styles.text, color: t.textColor}}>
               {this.props.line}
             </Text>
-            <Text style={{...styles.text, color: t.textColor}}>
-              {this.props.arrivesIn == 'jutro' ? 'jutro' : arrivalTimeFormatted}
-            </Text>
+            {this.props.arrivesIn && (
+              <Text style={{...styles.text, color: t.textColor}}>
+                {arrivalTimeFormatted}
+              </Text>
+            )}
           </View>
         )}
       </ThemeContext.Consumer>
