@@ -5,10 +5,10 @@ import PropTypes from 'prop-types';
 
 export default class LineTag extends Component {
   render() {
-    let arrivalTimeFormatted = Math.floor(this.props.arrivesIn);
-    if (arrivalTimeFormatted >= 60)
-      arrivalTimeFormatted = Math.floor(arrivalTimeFormatted / 60) + ' godz';
-    else arrivalTimeFormatted += ' min';
+    let leavingTimeFormatted = Math.floor(this.props.leavesIn);
+    if (leavingTimeFormatted >= 60)
+      leavingTimeFormatted = Math.floor(leavingTimeFormatted / 60) + ' godz';
+    else leavingTimeFormatted += ' min';
     return (
       <ThemeContext.Consumer>
         {({t}) => (
@@ -26,9 +26,9 @@ export default class LineTag extends Component {
             <Text style={{...styles.text, color: t.textColor}}>
               {this.props.line}
             </Text>
-            {this.props.arrivesIn && (
+            {this.props.leavesIn && (
               <Text style={{...styles.text, color: t.textColor}}>
-                {arrivalTimeFormatted}
+                {leavingTimeFormatted}
               </Text>
             )}
           </View>
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
 });
 
 LineTag.propTypes = {
-  arrivesIn: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  leavesIn: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   isFav: PropTypes.bool,
   line: PropTypes.string.isRequired,
 };

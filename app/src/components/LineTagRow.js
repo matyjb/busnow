@@ -136,7 +136,7 @@ export default class LineTagRow extends Component {
     return (
       <View style={styles.container}>
         {this.state.lines.map((e, i) => (
-          <LineTag key={i} arrivesIn={e.leavesIn} line={e.line} />
+          <LineTag key={i} leavesIn={e.leavesIn} line={e.line} />
         ))}
       </View>
     );
