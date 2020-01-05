@@ -44,7 +44,9 @@ export default class BusTramApiContextProvider extends Component {
     } else {
       set.add(stop);
     }
-    this.setState({favStops: Array.from(set)});
+    let stops = Array.from(set);
+    this._saveFavStopsToStorage(stops);
+    this.setState({favStops: stops});
   };
 
   setMapRef = r => {
@@ -146,6 +148,44 @@ export default class BusTramApiContextProvider extends Component {
       console.log('error saving stops to storage');
     }
   };
+  _loadFavStopsFromStorage = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@Storage:favStops');
+      if (value !== null) {
+        this.setState({favStops: JSON.parse(value)});
+      }
+      console.log('loaded favStops');
+    } catch (error) {
+      console.log('error loading favStops from storage');
+    }
+  };
+  _saveFavStopsToStorage = async stops => {
+    try {
+      await AsyncStorage.setItem('@Storage:favStops', JSON.stringify(stops));
+      console.log('saved favStops');
+    } catch (error) {
+      console.log('error saving favStops to storage');
+    }
+  };
+  _loadFavLinesFromStorage = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@Storage:favLines');
+      if (value !== null) {
+        this.setState({favLines: JSON.parse(value)});
+      }
+      console.log('loaded favLines');
+    } catch (error) {
+      console.log('error loading favLines from storage');
+    }
+  };
+  _saveFavLinesToStorage = async lines => {
+    try {
+      await AsyncStorage.setItem('@Storage:favLines', JSON.stringify(lines));
+      console.log('saved favLines');
+    } catch (error) {
+      console.log('error saving favLines to storage');
+    }
+  };
 
   toggleRadar = () => {
     var coords = {
@@ -175,7 +215,9 @@ export default class BusTramApiContextProvider extends Component {
     var linesSet = new Set(this.state.favLines);
     if (linesSet.has(line)) linesSet.delete(line);
     else linesSet.add(line);
-    this.setState({favLines: [...linesSet]});
+    let lines = [...linesSet];
+    this._saveFavLinesToStorage(lines);
+    this.setState({favLines: lines});
   };
   _updateVehicles = async () => {
     var vehiclesFiltered = [];
@@ -216,6 +258,15 @@ export default class BusTramApiContextProvider extends Component {
       await this._saveStopsToStorage(this.state.allStops);
     } else {
       await this._loadStopsFromStorage();
+    }
+    //favStops
+    if ((await AsyncStorage.getItem('@Storage:favStops')) != null) {
+      await this._loadFavStopsFromStorage(this.state.favStops);
+    }
+
+    //favLines
+    if ((await AsyncStorage.getItem('@Storage:favLines')) != null) {
+      await this._loadFavLinesFromStorage(this.state.favLines);
     }
 
     //
