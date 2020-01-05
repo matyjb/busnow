@@ -10,7 +10,7 @@ class FabMapScreen extends Component {
       <ThemeContext.Consumer>
         {({t}) => (
           <BusTramApiContext.Consumer>
-            {({toggleRadar}) => (
+            {({toggleRadar, navigateToUser}) => (
               <Fab
                 active={true}
                 style={{...this.props.style, backgroundColor: t.accentColor}}
@@ -28,6 +28,7 @@ class FabMapScreen extends Component {
                     backgroundColor: t.accentColor,
                     marginBottom: 14,
                   }}
+                  onPress={() => navigateToUser()}
                 >
                   <Icon
                     name="gps-fixed"

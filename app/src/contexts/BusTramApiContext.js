@@ -1,6 +1,7 @@
 import React, {Component, createContext} from 'react';
 import WarsawApi from '../WarsawApi';
 import AsyncStorage from '@react-native-community/async-storage';
+import Geolocation from '@react-native-community/geolocation';
 
 var moment = require('moment');
 
@@ -33,6 +34,20 @@ export default class BusTramApiContextProvider extends Component {
 
   setMapRef = r => {
     this.map = r;
+  };
+
+  navigateToUser = () => {
+    Geolocation.getCurrentPosition(
+      ({coords}) => {
+        this.map.animateToRegion(
+          {...coords, latitudeDelta: 0.01, longitudeDelta: 0.01},
+          400
+        );
+      },
+      // error => alert('Error: Are location services on?'),
+      error => {},
+      {enableHighAccuracy: true}
+    );
   };
 
   selectMarker = marker => {
@@ -202,6 +217,7 @@ export default class BusTramApiContextProvider extends Component {
       setMapRef: this.setMapRef,
       fitMapToClasterStops: this.fitMapToClasterStops,
       selectMarker: this.selectMarker,
+      navigateToUser: this.navigateToUser,
       // stopsInBounds: this.stopsInBounds,
       // updateVehicles: this._updateVehicles,
       toggleLine: this.toggleLine,
