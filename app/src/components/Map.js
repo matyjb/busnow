@@ -27,13 +27,17 @@ export default class Map extends Component {
     } else {
       let output = [];
       stops.forEach(c => {
-        c.stops.forEach(stop => {
-          output.push(stop);
+        c.stops.forEach(s => {
+          output.push(
+            <StopMarker
+              key={s.unit + ':' + s.nr}
+              style={{zIndex: 1}}
+              stop={s}
+            />
+          );
         });
       });
-      return output.map(s => (
-        <StopMarker key={s.unit + ':' + s.nr} style={{zIndex: 1}} stop={s} />
-      ));
+      return output;
     }
   }
 
@@ -76,7 +80,7 @@ export default class Map extends Component {
 
   updateBusStopsMarkers = async (mapRegion, stopsInBounds) => {
     let markers =
-      mapRegion.latitudeDelta < 0.04 &&
+      mapRegion.latitudeDelta < 0.03 &&
       this.getStopsMarkers(stopsInBounds, mapRegion.latitudeDelta > 0.013);
     this.setState({busStopsMarkers: markers});
   };

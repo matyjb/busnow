@@ -5,44 +5,41 @@ import {BusTramApiContext} from '../contexts/BusTramApiContext';
 import {Text, Icon} from 'native-base';
 import {StyleSheet, View} from 'react-native';
 import {ThemeContext} from '../contexts/ThemeContext';
+import icon_light_cluster from './../assets/icon_light_cluster.png';
+import icon_dark_cluster from './../assets/icon_dark_cluster.png';
 
 const StopClusterMarker = props => {
   return (
-    <BusTramApiContext.Consumer>
-      {({fitMapToClasterStops}) => (
-        <Marker
-          style={props.style}
-          coordinate={{
-            latitude: props.cluster.lat,
-            longitude: props.cluster.lon,
-          }}
-          title={props.cluster.name}
-          description={props.cluster.unit}
-          tracksViewChanges={false}
-          onPress={() => fitMapToClasterStops(props.cluster)}
-        >
-          <ThemeContext.Consumer>
-            {({t}) => (
-              <View
-                style={{
-                  ...styles.container,
-                  backgroundColor: t.stopBgColor,
+    <ThemeContext.Consumer>
+      {({theme}) => (
+        <BusTramApiContext.Consumer>
+          {({fitMapToClasterStops}) => {
+            let icon;
+            if (theme == 'dark') icon = icon_dark_cluster;
+            else icon = icon_light_cluster;
+
+            // TODO: add selected or not
+            return (
+              <Marker
+                style={props.style}
+                coordinate={{
+                  latitude: props.cluster.lat,
+                  longitude: props.cluster.lon,
                 }}
+                image={icon}
+                tracksViewChanges={false}
+                onPress={() => fitMapToClasterStops(props.cluster)}
               >
-                <Icon
-                  style={{...styles.icon, color: t.stopIconColor}}
-                  name="bus"
-                />
-              </View>
-            )}
-          </ThemeContext.Consumer>
-          {/* workaround to hide callout */}
-          <Callout tooltip>
-            <Text></Text>
-          </Callout>
-        </Marker>
+                {/* workaround to hide callout */}
+                <Callout tooltip>
+                  <Text></Text>
+                </Callout>
+              </Marker>
+            );
+          }}
+        </BusTramApiContext.Consumer>
       )}
-    </BusTramApiContext.Consumer>
+    </ThemeContext.Consumer>
   );
 };
 

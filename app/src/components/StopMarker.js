@@ -2,69 +2,45 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Marker, Callout} from 'react-native-maps';
 import {BusTramApiContext} from '../contexts/BusTramApiContext';
-import {Text, Icon} from 'native-base';
-import {StyleSheet, View} from 'react-native';
+import {Text} from 'native-base';
 import {ThemeContext} from '../contexts/ThemeContext';
+import icon_light from './../assets/icon_light.png';
+import icon_dark from './../assets/icon_dark.png';
 
 const StopMarker = props => {
   return (
-    <BusTramApiContext.Consumer>
-      {({selectMarker}) => (
-        <Marker
-          style={props.style}
-          coordinate={{latitude: props.stop.lat, longitude: props.stop.lon}}
-          title={props.stop.name + ' ' + props.stop.nr}
-          description={props.stop.unit}
-          tracksViewChanges={false}
-          onPress={() => selectMarker(props.stop)}
-        >
-          <ThemeContext.Consumer>
-            {({t}) => (
-              <View
-                style={{
-                  ...styles.container,
-                  backgroundColor: t.stopBgColor,
+    <ThemeContext.Consumer>
+      {({theme}) => (
+        <BusTramApiContext.Consumer>
+          {({selectMarker}) => {
+            let icon;
+            if (theme == 'dark') icon = icon_dark;
+            else icon = icon_light;
+
+            // TODO: add selected or not
+            return (
+              <Marker
+                style={props.style}
+                coordinate={{
+                  latitude: props.stop.lat,
+                  longitude: props.stop.lon,
                 }}
+                image={icon}
+                tracksViewChanges={false}
+                onPress={() => selectMarker(props.stop)}
               >
-                <Icon
-                  style={{...styles.icon, color: t.stopIconColor}}
-                  name="bus"
-                />
-              </View>
-            )}
-          </ThemeContext.Consumer>
-          {/* workaround to hide callout */}
-          <Callout tooltip>
-            <Text></Text>
-          </Callout>
-        </Marker>
+                {/* workaround to hide callout */}
+                <Callout tooltip>
+                  <Text></Text>
+                </Callout>
+              </Marker>
+            );
+          }}
+        </BusTramApiContext.Consumer>
       )}
-    </BusTramApiContext.Consumer>
+    </ThemeContext.Consumer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#FFFFFF',
-    // borderRadius: 4,
-    borderRadius: 5,
-    borderWidth: 0.7,
-    borderStyle: 'solid',
-    borderColor: '#DBA656',
-    shadowColor: '#000',
-    shadowOffset: {width: 1, height: 1},
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    // paddingHorizontal: 2,
-    width: 18,
-    height: 18,
-    justifyContent: 'center',
-  },
-  icon: {
-    fontSize: 16,
-    margin: 3,
-  },
-});
 
 StopMarker.propTypes = {
   stop: PropTypes.shape({
