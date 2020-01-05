@@ -13,6 +13,7 @@ export default class LineTagRow extends Component {
 
   async componentDidMount() {
     await this._getLines(this.props.unit, this.props.nr);
+    this.interval = setInterval(this._updateArrivalTime, 60000);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -20,6 +21,46 @@ export default class LineTagRow extends Component {
       this._getLines(nextProps.unit, nextProps.nr);
     }
   }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  _updateArrivalTime = async () => {
+    let l = this.state.lines;
+    for (let i = 0; i < l.length; i++) {
+      if (isNaN(l[i].arrivesIn)) continue;
+      l[i].arrivesIn--;
+      if (l[i].arrivesIn < 0) {
+        l[i].timetableIndex++;
+        if (l[i].timetableIndex >= l[i].timetable.length)
+          l[i].timetableIndex = 0;
+
+        let time = l[i].timetable[l[i].timetableIndex].values[5].value.split(
+          ':'
+        );
+        let h = time[0];
+        let m = time[1];
+        let s = time[2];
+        let currentTime = moment();
+        if (h >= 24) {
+          h -= 24;
+          // nocny
+          let arrivalTime = moment(h + ':' + m + ':' + s, 'HH:mm:ss');
+          let d =
+            moment.duration(arrivalTime.diff(currentTime)).asMinutes() +
+            60 * 24;
+
+          l[i].arrivesIn = d;
+        } else {
+          let arrivalTime = moment(h + ':' + m + ':' + s, 'HH:mm:ss');
+          let d = moment.duration(arrivalTime.diff(currentTime)).asMinutes();
+          l[i].arrivesIn = d;
+        }
+      }
+    }
+    this.setState({lines: l});
+  };
 
   async _getLines(unit, nr) {
     let lines = await WarsawApi.getStopLines(unit, nr);
@@ -35,6 +76,8 @@ export default class LineTagRow extends Component {
       })
     ).then(data => {
       let currentTime = moment();
+      console.log(data);
+
       let s = data.map(l => {
         for (let i = 0; i < l.timetable.length; i++) {
           const t = l.timetable[i];
@@ -48,7 +91,7 @@ export default class LineTagRow extends Component {
           let s = time[2];
           if (h >= 24) {
             h -= 24;
-            // nocny - przekazujemy liczbe minut, nie napis jutro
+            // nocny - przekazujemy liczbe minut
             let arrivalTime = moment(h + ':' + m + ':' + s, 'HH:mm:ss');
             let d =
               moment.duration(arrivalTime.diff(currentTime)).asMinutes() +
@@ -65,7 +108,35 @@ export default class LineTagRow extends Component {
             return {...l, timetableIndex: i, arrivesIn: d};
           }
         }
+
+        //koniec trasy
+        if (l.timetable.length == 0) {
+          return {...l, timetableIndex: 0, arrivesIn: NaN};
+        }
+
         //next bus is tomorrow
+        // const tmt = l.timetable[0];
+
+        // let time = tmt.values[5].value.split(':');
+        // let h = time[0];
+        // let m = time[1];
+        // let s = time[2];
+
+        // if (h >= 24) {
+        //   h -= 24;
+        //   // nocny
+        //   let arrivalTime = moment(h + ':' + m + ':' + s, 'HH:mm:ss');
+        //   let d =
+        //     moment.duration(arrivalTime.diff(currentTime)).asMinutes() +
+        //     60 * 24;
+
+        //   return {...l, timetableIndex: 0, arrivesIn: d};
+        // } else {
+        //   let arrivalTime = moment(h + ':' + m + ':' + s, 'HH:mm:ss');
+
+        //   let d = moment.duration(arrivalTime.diff(currentTime)).asMinutes();
+        //   return {...l, timetableIndex: 0, arrivesIn: d};
+        // }
         return {...l, timetableIndex: 0, arrivesIn: 'jutro'};
       });
 

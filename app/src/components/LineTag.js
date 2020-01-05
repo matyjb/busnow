@@ -5,10 +5,10 @@ import PropTypes from 'prop-types';
 
 export default class LineTag extends Component {
   render() {
-    let arrivaalTimeFormatted = Math.floor(this.props.arrivesIn);
-    if (arrivaalTimeFormatted >= 60)
-      arrivaalTimeFormatted = Math.floor(arrivaalTimeFormatted / 60) + ' godz';
-    else arrivaalTimeFormatted += ' min';
+    let arrivalTimeFormatted = Math.floor(this.props.arrivesIn);
+    if (arrivalTimeFormatted >= 60)
+      arrivalTimeFormatted = Math.floor(arrivalTimeFormatted / 60) + ' godz';
+    else arrivalTimeFormatted += ' min';
 
     return (
       <ThemeContext.Consumer>
@@ -28,9 +28,7 @@ export default class LineTag extends Component {
               {this.props.line}
             </Text>
             <Text style={{...styles.text, color: t.textColor}}>
-              {this.props.arrivesIn == 'jutro'
-                ? 'jutro'
-                : arrivaalTimeFormatted}
+              {this.props.arrivesIn == 'jutro' ? 'jutro' : arrivalTimeFormatted}
             </Text>
           </View>
         )}
