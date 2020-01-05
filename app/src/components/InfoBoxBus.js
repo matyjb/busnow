@@ -4,6 +4,7 @@ import {ThemeContext} from '../contexts/ThemeContext';
 import {Icon, Button} from 'native-base';
 import PropTypes from 'prop-types';
 import SecondsSinceTime from './SecondsSinceTime';
+import {BusTramApiContext} from '../contexts/BusTramApiContext';
 
 export default class InfoBoxBus extends Component {
   render() {
@@ -42,15 +43,27 @@ export default class InfoBoxBus extends Component {
                   </Text>
                 </View>
               </View>
-              <View style={styles.favIconContainer}>
-                <Button transparent>
-                  <Icon
-                    name="star"
-                    style={{...styles.favIcon, color: t.accentColor}}
-                    type="AntDesign"
-                  />
-                </Button>
-              </View>
+              <BusTramApiContext.Consumer>
+                {({toggleLine, favLines}) => {
+                  let f = favLines.find(e => {
+                    return e == selectedMarker.Lines;
+                  });
+                  return (
+                    <View style={styles.favIconContainer}>
+                      <Button
+                        transparent
+                        onPress={() => toggleLine(selectedMarker.Lines)}
+                      >
+                        <Icon
+                          name={f ? 'star' : 'staro'}
+                          style={{...styles.favIcon, color: t.accentColor}}
+                          type="AntDesign"
+                        />
+                      </Button>
+                    </View>
+                  );
+                }}
+              </BusTramApiContext.Consumer>
             </View>
           </View>
         )}

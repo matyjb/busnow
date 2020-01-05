@@ -12,7 +12,7 @@ export default class BusTramApiContextProvider extends Component {
     allStops: [],
     stopsInBounds: [],
     vehicles: [],
-    lines: ['709', '739', '727', '185', '209', '401', '193', '737'],
+    favLines: ['709', '739', '727', '185', '209', '401', '193', '737'],
     favStops: [],
     mapRegion: {
       //lat lon is center of screen
@@ -172,17 +172,17 @@ export default class BusTramApiContextProvider extends Component {
   };
 
   toggleLine = line => {
-    var linesSet = new Set(this.state.lines);
+    var linesSet = new Set(this.state.favLines);
     if (linesSet.has(line)) linesSet.delete(line);
     else linesSet.add(line);
-    this.setState({lines: [...linesSet]});
+    this.setState({favLines: [...linesSet]});
   };
   _updateVehicles = async () => {
     var vehiclesFiltered = [];
     if (true) {
       //temp for dev
       var timeNow = moment();
-      for (const i of this.state.lines) {
+      for (const i of this.state.favLines) {
         var line = await WarsawApi.getLine(i, i < 100 ? 2 : 1);
         line.forEach(v => {
           var timeVehicle = moment(v.Time);
