@@ -13,6 +13,7 @@ export default class BusTramApiContextProvider extends Component {
     stopsInBounds: [],
     vehicles: [],
     lines: ['709', '739', '727', '185', '209', '401', '193', '737'],
+    favStops: [],
     mapRegion: {
       //lat lon is center of screen
       latitude: 52.122801,
@@ -30,6 +31,20 @@ export default class BusTramApiContextProvider extends Component {
       isOn: false,
     },
     selectedMarker: null,
+  };
+
+  toggleStopInFavs = stop => {
+    let s = this.state.favStops;
+    let f = s.find(e => {
+      return e.unit == stop.unit && e.nr == stop.nr;
+    });
+    let set = new Set(s);
+    if (f) {
+      set.delete(f);
+    } else {
+      set.add(stop);
+    }
+    this.setState({favStops: Array.from(set)});
   };
 
   setMapRef = r => {
@@ -218,6 +233,7 @@ export default class BusTramApiContextProvider extends Component {
       fitMapToClasterStops: this.fitMapToClasterStops,
       selectMarker: this.selectMarker,
       navigateToUser: this.navigateToUser,
+      toggleStopInFavs: this.toggleStopInFavs,
       // stopsInBounds: this.stopsInBounds,
       // updateVehicles: this._updateVehicles,
       toggleLine: this.toggleLine,

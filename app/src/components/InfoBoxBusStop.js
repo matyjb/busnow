@@ -4,6 +4,7 @@ import {ThemeContext} from '../contexts/ThemeContext';
 import {Icon, Button} from 'native-base';
 import PropTypes from 'prop-types';
 import LineTagRow from './LineTagRow';
+import {BusTramApiContext} from '../contexts/BusTramApiContext';
 
 export default class InfoBoxBusStop extends Component {
   render() {
@@ -29,15 +30,29 @@ export default class InfoBoxBusStop extends Component {
                 </Text>
                 <LineTagRow unit={selectedMarker.unit} nr={selectedMarker.nr} />
               </View>
-              <View style={styles.favIconContainer}>
-                <Button transparent>
-                  <Icon
-                    name="star"
-                    style={{...styles.favIcon, color: t.accentColor}}
-                    type="AntDesign"
-                  />
-                </Button>
-              </View>
+              <BusTramApiContext.Consumer>
+                {({toggleStopInFavs, favStops}) => {
+                  let f = favStops.find(e => {
+                    return (
+                      e.unit == selectedMarker.unit && e.nr == selectedMarker.nr
+                    );
+                  });
+                  return (
+                    <View style={styles.favIconContainer}>
+                      <Button
+                        transparent
+                        onPress={() => toggleStopInFavs(selectedMarker)}
+                      >
+                        <Icon
+                          name={f ? 'star' : 'staro'}
+                          style={{...styles.favIcon, color: t.accentColor}}
+                          type="AntDesign"
+                        />
+                      </Button>
+                    </View>
+                  );
+                }}
+              </BusTramApiContext.Consumer>
             </View>
           </View>
         )}
