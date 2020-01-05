@@ -6,18 +6,23 @@ import {Text} from 'native-base';
 import {ThemeContext} from '../contexts/ThemeContext';
 import icon_light from './../assets/icon_light.png';
 import icon_dark from './../assets/icon_dark.png';
+import icon_selected_light from './../assets/icon_selected_light.png';
+import icon_selected_dark from './../assets/icon_selected_dark.png';
 
 const StopMarker = props => {
   return (
     <ThemeContext.Consumer>
       {({theme}) => (
         <BusTramApiContext.Consumer>
-          {({selectMarker}) => {
+          {({selectMarker, selectedMarker}) => {
             let icon;
-            if (theme == 'dark') icon = icon_dark;
-            else icon = icon_light;
-
-            // TODO: add selected or not
+            if (theme == 'dark') {
+              if (selectedMarker == props.stop) icon = icon_selected_dark;
+              else icon = icon_dark;
+            } else {
+              if (selectedMarker == props.stop) icon = icon_selected_light;
+              else icon = icon_light;
+            }
             return (
               <Marker
                 style={props.style}
