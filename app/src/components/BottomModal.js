@@ -4,7 +4,7 @@ import Modal from 'react-native-modalbox';
 import {ThemeContext} from '../contexts/ThemeContext';
 import {Button, Icon, View} from 'native-base';
 import {withNavigation} from 'react-navigation';
-import {BusTramApiContext} from '../contexts/BusTramApiContext';
+import {GlobalContext} from '../contexts/GlobalContext';
 import {FlatList} from 'react-native-gesture-handler';
 
 class BottomModal extends Component {
@@ -12,7 +12,7 @@ class BottomModal extends Component {
     return (
       <ThemeContext.Consumer>
         {({t}) => (
-          <BusTramApiContext.Consumer>
+          <GlobalContext.Consumer>
             {({favStops, navigateToMarkerAndSelect}) => (
               <Modal
                 style={{
@@ -86,7 +86,7 @@ class BottomModal extends Component {
                 </View>
               </Modal>
             )}
-          </BusTramApiContext.Consumer>
+          </GlobalContext.Consumer>
         )}
       </ThemeContext.Consumer>
     );

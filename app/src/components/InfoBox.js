@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import {Text, StyleSheet, View} from 'react-native';
-import {BusTramApiContext} from '../contexts/BusTramApiContext';
+import {GlobalContext} from '../contexts/GlobalContext';
 import InfoBoxBus from './InfoBoxBus';
 import InfoBoxBusStop from './InfoBoxBusStop';
 
 export default class InfoBox extends Component {
   render() {
     return (
-      <BusTramApiContext.Consumer>
+      <GlobalContext.Consumer>
         {({selectedMarker}) =>
           selectedMarker &&
           (selectedMarker.Lines ? (
@@ -16,7 +16,7 @@ export default class InfoBox extends Component {
             <InfoBoxBusStop selectedMarker={selectedMarker} />
           ))
         }
-      </BusTramApiContext.Consumer>
+      </GlobalContext.Consumer>
     );
   }
 }

@@ -5,9 +5,9 @@ import Geolocation from '@react-native-community/geolocation';
 
 var moment = require('moment');
 
-export const BusTramApiContext = createContext();
+export const GlobalContext = createContext();
 
-export default class BusTramApiContextProvider extends Component {
+export default class GlobalContextProvider extends Component {
   state = {
     allStops: [],
     stopsInBounds: [],
@@ -310,9 +310,9 @@ export default class BusTramApiContextProvider extends Component {
       setMapRegion: this.setMapRegion,
     };
     return (
-      <BusTramApiContext.Provider value={value}>
+      <GlobalContext.Provider value={value}>
         {this.props.children}
-      </BusTramApiContext.Provider>
+      </GlobalContext.Provider>
     );
   }
 }

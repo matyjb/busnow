@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Icon, Button, Fab} from 'native-base';
 import {ThemeContext} from '../contexts/ThemeContext';
-import {BusTramApiContext} from '../contexts/BusTramApiContext';
+import {GlobalContext} from '../contexts/GlobalContext';
 import {withNavigation} from 'react-navigation';
 
 class FabMapScreen extends Component {
@@ -9,7 +9,7 @@ class FabMapScreen extends Component {
     return (
       <ThemeContext.Consumer>
         {({t}) => (
-          <BusTramApiContext.Consumer>
+          <GlobalContext.Consumer>
             {({toggleRadar, navigateToUser}) => (
               <Fab
                 active={true}
@@ -44,7 +44,7 @@ class FabMapScreen extends Component {
                 </Button>
               </Fab>
             )}
-          </BusTramApiContext.Consumer>
+          </GlobalContext.Consumer>
         )}
       </ThemeContext.Consumer>
     );

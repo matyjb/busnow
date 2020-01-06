@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Marker, Callout} from 'react-native-maps';
-import {BusTramApiContext} from '../contexts/BusTramApiContext';
+import {GlobalContext} from '../contexts/GlobalContext';
 import {Text} from 'native-base';
 import {ThemeContext} from '../contexts/ThemeContext';
 import icon_light_cluster from './../assets/icon_light_cluster.png';
@@ -11,7 +11,7 @@ const StopClusterMarker = props => {
   return (
     <ThemeContext.Consumer>
       {({theme}) => (
-        <BusTramApiContext.Consumer>
+        <GlobalContext.Consumer>
           {({fitMapToClasterStops}) => {
             let icon;
             if (theme == 'dark') icon = icon_dark_cluster;
@@ -34,7 +34,7 @@ const StopClusterMarker = props => {
               </Marker>
             );
           }}
-        </BusTramApiContext.Consumer>
+        </GlobalContext.Consumer>
       )}
     </ThemeContext.Consumer>
   );

@@ -3,7 +3,7 @@ import {Text, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
 import LineTag from './LineTag';
 import WarsawApi from '../WarsawApi';
-import {BusTramApiContext} from '../contexts/BusTramApiContext';
+import {GlobalContext} from '../contexts/GlobalContext';
 
 var moment = require('moment');
 
@@ -135,7 +135,7 @@ export default class LineTagRow extends Component {
 
   render() {
     return (
-      <BusTramApiContext.Consumer>
+      <GlobalContext.Consumer>
         {({favLines}) => (
           <View style={styles.container}>
             {this.state.lines.map((e, i) => (
@@ -148,7 +148,7 @@ export default class LineTagRow extends Component {
             ))}
           </View>
         )}
-      </BusTramApiContext.Consumer>
+      </GlobalContext.Consumer>
     );
   }
 }

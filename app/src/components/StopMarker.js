@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Marker, Callout} from 'react-native-maps';
-import {BusTramApiContext} from '../contexts/BusTramApiContext';
+import {GlobalContext} from '../contexts/GlobalContext';
 import {Text} from 'native-base';
 import {ThemeContext} from '../contexts/ThemeContext';
 import icon_light from './../assets/icon_light.png';
@@ -13,7 +13,7 @@ const StopMarker = props => {
   return (
     <ThemeContext.Consumer>
       {({theme}) => (
-        <BusTramApiContext.Consumer>
+        <GlobalContext.Consumer>
           {({selectMarker, selectedMarker}) => {
             let icon;
             if (theme == 'dark') {
@@ -41,7 +41,7 @@ const StopMarker = props => {
               </Marker>
             );
           }}
-        </BusTramApiContext.Consumer>
+        </GlobalContext.Consumer>
       )}
     </ThemeContext.Consumer>
   );

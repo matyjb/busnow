@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, PermissionsAndroid, Platform} from 'react-native';
 import {ThemeContext} from '../contexts/ThemeContext';
-import {BusTramApiContext} from '../contexts/BusTramApiContext';
+import {GlobalContext} from '../contexts/GlobalContext';
 import MapView, {Circle} from 'react-native-maps';
 import VehicleMarker from './VehicleMarker';
 import StopMarker from './StopMarker';
@@ -95,7 +95,7 @@ export default class Map extends Component {
     return (
       <ThemeContext.Consumer>
         {({t}) => (
-          <BusTramApiContext.Consumer>
+          <GlobalContext.Consumer>
             {({
               vehicles,
               setMapRegion,
@@ -140,7 +140,7 @@ export default class Map extends Component {
                 </MapView>
               </View>
             )}
-          </BusTramApiContext.Consumer>
+          </GlobalContext.Consumer>
         )}
       </ThemeContext.Consumer>
     );

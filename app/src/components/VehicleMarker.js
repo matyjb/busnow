@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import {ThemeContext} from '../contexts/ThemeContext';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {BusTramApiContext} from '../contexts/BusTramApiContext';
+import {GlobalContext} from '../contexts/GlobalContext';
 
 const screen = Dimensions.get('window');
 
@@ -46,7 +46,7 @@ class VehicleMarker extends Component {
   }
   render() {
     return (
-      <BusTramApiContext.Consumer>
+      <GlobalContext.Consumer>
         {({selectMarker}) => (
           <Marker.Animated
             style={this.props.style}
@@ -73,7 +73,7 @@ class VehicleMarker extends Component {
             </ThemeContext.Consumer>
           </Marker.Animated>
         )}
-      </BusTramApiContext.Consumer>
+      </GlobalContext.Consumer>
     );
   }
 }

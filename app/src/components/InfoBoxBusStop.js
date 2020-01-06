@@ -4,7 +4,7 @@ import {ThemeContext} from '../contexts/ThemeContext';
 import {Icon, Button} from 'native-base';
 import PropTypes from 'prop-types';
 import LineTagRow from './LineTagRow';
-import {BusTramApiContext} from '../contexts/BusTramApiContext';
+import {GlobalContext} from '../contexts/GlobalContext';
 
 export default class InfoBoxBusStop extends Component {
   render() {
@@ -30,7 +30,7 @@ export default class InfoBoxBusStop extends Component {
                 </Text>
                 <LineTagRow unit={selectedMarker.unit} nr={selectedMarker.nr} />
               </View>
-              <BusTramApiContext.Consumer>
+              <GlobalContext.Consumer>
                 {({toggleStopInFavs, favStops}) => {
                   let f = favStops.find(e => {
                     return (
@@ -52,7 +52,7 @@ export default class InfoBoxBusStop extends Component {
                     </View>
                   );
                 }}
-              </BusTramApiContext.Consumer>
+              </GlobalContext.Consumer>
             </View>
           </View>
         )}

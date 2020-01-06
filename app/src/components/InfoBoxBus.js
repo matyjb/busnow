@@ -4,7 +4,7 @@ import {ThemeContext} from '../contexts/ThemeContext';
 import {Icon, Button} from 'native-base';
 import PropTypes from 'prop-types';
 import SecondsSinceTime from './SecondsSinceTime';
-import {BusTramApiContext} from '../contexts/BusTramApiContext';
+import {GlobalContext} from '../contexts/GlobalContext';
 
 export default class InfoBoxBus extends Component {
   render() {
@@ -43,7 +43,7 @@ export default class InfoBoxBus extends Component {
                   </Text>
                 </View>
               </View>
-              <BusTramApiContext.Consumer>
+              <GlobalContext.Consumer>
                 {({toggleLine, favLines}) => {
                   let f = favLines.find(e => {
                     return e == selectedMarker.Lines;
@@ -63,7 +63,7 @@ export default class InfoBoxBus extends Component {
                     </View>
                   );
                 }}
-              </BusTramApiContext.Consumer>
+              </GlobalContext.Consumer>
             </View>
           </View>
         )}
