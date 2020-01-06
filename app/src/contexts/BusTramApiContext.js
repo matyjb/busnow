@@ -67,6 +67,21 @@ export default class BusTramApiContextProvider extends Component {
     );
   };
 
+  navigateToMarkerAndSelect = marker => {
+    console.log('hello');
+
+    this.map.animateToRegion(
+      {
+        latitude: marker.lat,
+        longitude: marker.lon,
+        latitudeDelta: 0.02,
+        longitudeDelta: 0.02,
+      },
+      400
+    );
+    this.selectMarker(marker);
+  };
+
   selectMarker = marker => {
     this.setState({selectedMarker: marker});
   };
@@ -285,6 +300,7 @@ export default class BusTramApiContextProvider extends Component {
       selectMarker: this.selectMarker,
       navigateToUser: this.navigateToUser,
       toggleStopInFavs: this.toggleStopInFavs,
+      navigateToMarkerAndSelect: this.navigateToMarkerAndSelect,
       // stopsInBounds: this.stopsInBounds,
       // updateVehicles: this._updateVehicles,
       toggleLine: this.toggleLine,

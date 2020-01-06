@@ -38,12 +38,6 @@ class FabMapScreen extends Component {
                 </Button>
                 <Button
                   style={{...this.props.style, backgroundColor: t.accentColor}}
-                  onPress={() => this.props.navigation.navigate('Settings')}
-                >
-                  <Icon name="md-settings" style={{color: t.primaryColor}} />
-                </Button>
-                <Button
-                  style={{...this.props.style, backgroundColor: t.accentColor}}
                   onPress={() => this.props.modalref.open()}
                 >
                   <Icon name="md-menu" style={{color: t.primaryColor}} />
