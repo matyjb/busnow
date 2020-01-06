@@ -3,8 +3,6 @@ import WarsawApi from '../WarsawApi';
 import AsyncStorage from '@react-native-community/async-storage';
 import Geolocation from '@react-native-community/geolocation';
 
-var moment = require('moment');
-
 export const GlobalContext = createContext();
 
 export const withGlobalContext = Component => props => (
@@ -16,10 +14,10 @@ export const withGlobalContext = Component => props => (
 export default class GlobalContextProvider extends Component {
   state = {
     allStops: [],
-    stopsInBounds: [],
-    vehicles: [],
     favLines: ['709', '739', '727', '185', '209', '401', '193', '737'],
     favStops: [],
+    stopsInBounds: [],
+    // vehicles: [],
     mapRegion: {
       //lat lon is center of screen
       latitude: 52.122801,
@@ -240,37 +238,6 @@ export default class GlobalContextProvider extends Component {
     this._saveFavLinesToStorage(lines);
     this.setState({favLines: lines});
   };
-  _updateVehicles = async () => {
-    var vehiclesFiltered = [];
-    if (true) {
-      //temp for dev
-      var timeNow = moment();
-      for (const i of this.state.favLines) {
-        var line = await WarsawApi.getLine(i, i < 100 ? 2 : 1);
-        line.forEach(v => {
-          var timeVehicle = moment(v.Time);
-          var duration = moment.duration(timeNow.diff(timeVehicle));
-          var seconds = duration.asSeconds();
-          if (seconds < 50) vehiclesFiltered.push(v);
-        });
-      }
-    }
-
-    // update selectedMarker that is a bus
-    let newstate = {vehicles: vehiclesFiltered};
-    if (this.state.selectedMarker && this.state.selectedMarker.VehicleNumber) {
-      let t = vehiclesFiltered.filter(
-        e => e.VehicleNumber == this.state.selectedMarker.VehicleNumber
-      );
-      if (t.length > 0) {
-        this.setState({...newstate, selectedMarker: t[0]});
-      } else {
-        this.setState({...newstate, selectedMarker: null});
-      }
-    } else {
-      this.setState(newstate);
-    }
-  };
 
   async componentDidMount() {
     //allStops
@@ -291,11 +258,6 @@ export default class GlobalContextProvider extends Component {
     }
 
     //
-    this._updateVehicles();
-    this.interval = setInterval(this._updateVehicles, 10000);
-  }
-  componentWillUnmount() {
-    clearInterval(this.interval);
   }
 
   render() {

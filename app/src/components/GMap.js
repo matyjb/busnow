@@ -7,6 +7,8 @@ import VehicleMarker from './VehicleMarker';
 import StopMarker from './StopMarker';
 import StopClusterMarker from './StopClusterMarker';
 import Geolocation from '@react-native-community/geolocation';
+import WarsawApi from '../WarsawApi';
+var moment = require('moment');
 
 const GEOLOCATION_OPTIONS = {
   enableHighAccuracy: true,
@@ -17,8 +19,41 @@ const GEOLOCATION_OPTIONS = {
 class GMap extends Component {
   state = {
     // vehicleMarkers: [],
+    vehicles: [],
     busStopsMarkers: [],
   };
+
+  _updateVehicles = async () => {
+    let {favLines, selectedMarker, selectMarker} = this.props.globalContext;
+    var vehiclesFiltered = [];
+    if (true) {
+      //temp for dev
+      var timeNow = moment();
+      for (const i of favLines) {
+        var line = await WarsawApi.getLine(i, i < 100 ? 2 : 1);
+        line.forEach(v => {
+          var timeVehicle = moment(v.Time);
+          var duration = moment.duration(timeNow.diff(timeVehicle));
+          var seconds = duration.asSeconds();
+          if (seconds < 50) vehiclesFiltered.push(v);
+        });
+      }
+    }
+    this.setState({vehicles: vehiclesFiltered});
+
+    // update selectedMarker that is a bus
+    if (selectedMarker && selectedMarker.VehicleNumber) {
+      let t = vehiclesFiltered.filter(
+        e => e.VehicleNumber == selectedMarker.VehicleNumber
+      );
+      if (t.length > 0) {
+        selectMarker(t[0]);
+      } else {
+        selectMarker(null);
+      }
+    }
+  };
+
   getStopsMarkers(stops, clasters) {
     if (clasters) {
       return stops.map(c => (
@@ -55,6 +90,9 @@ class GMap extends Component {
     } else {
       this.watchLocation();
     }
+
+    this._updateVehicles();
+    this.interval = setInterval(this._updateVehicles, 10000);
   }
 
   watchLocation() {
@@ -76,6 +114,7 @@ class GMap extends Component {
     if (this.watchID) {
       Geolocation.clearWatch(this.watchID);
     }
+    clearInterval(this.interval);
   }
 
   updateBusStopsMarkers = async (mapRegion, stopsInBounds) => {
@@ -94,7 +133,6 @@ class GMap extends Component {
     };
     let {t} = this.props.themeContext;
     let {
-      vehicles,
       setMapRegion,
       radar,
       stopsInBounds,
@@ -116,7 +154,7 @@ class GMap extends Component {
           showsUserLocation={true}
           onPress={() => selectMarker(null)}
         >
-          {vehicles.map(v => (
+          {this.state.vehicles.map(v => (
             <VehicleMarker
               style={{zIndex: 2}}
               key={v.VehicleNumber}
