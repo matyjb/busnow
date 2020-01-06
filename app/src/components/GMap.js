@@ -172,8 +172,7 @@ class GMap extends Component {
         >
           {this._renderVehiclesMarkers()}
           {this._renderStopsMarkers()}
-          {/* <UserLocationMarker /> */}
-          {radar.isOn && (
+          {radar.coordinates && (
             <Circle
               style={{zIndex: 0}}
               center={radar.coordinates}

@@ -26,15 +26,13 @@ export default class GlobalContextProvider extends Component {
       longitudeDelta: 0.0421,
     },
     radar: {
-      coordinates: {
-        latitude: 0,
-        longitude: 0,
-      },
+      coordinates: null,
       radiusKMs: 1.5,
-      isOn: false,
     },
     selectedMarker: null,
   };
+
+  ///////////ACTIONS
 
   toggleStopInFavs = stop => {
     let s = this.state.favStops;
@@ -97,7 +95,35 @@ export default class GlobalContextProvider extends Component {
     });
   };
 
-  downloadAllStops = async () => {
+  toggleRadar = () => {
+    let coords = {
+      latitude: this.state.mapRegion.latitude,
+      longitude: this.state.mapRegion.longitude,
+    };
+    this.setState({
+      radar: {
+        ...this.state.radar,
+        coordinates: this.state.radar.coordinates ? null : coords,
+      },
+    });
+  };
+  setMapRegion = newRegion => {
+    this.setState({mapRegion: newRegion});
+  };
+
+  setRadarRadius = newRadius => {
+    this.setState({radar: {...this.state.radar, radiusKMs: newRadius}});
+  };
+
+  toggleLine = line => {
+    var linesSet = new Set(this.state.favLines);
+    if (linesSet.has(line)) linesSet.delete(line);
+    else linesSet.add(line);
+    let lines = [...linesSet];
+    this._saveFavLinesToStorage(lines);
+    this.setState({favLines: lines});
+  };
+  _downloadAllStops = async () => {
     let stops = await WarsawApi.getStops();
     console.log('downloaded all stops');
     let clustered = stops
@@ -131,6 +157,7 @@ export default class GlobalContextProvider extends Component {
     this.setState({allStops: clustered});
   };
 
+  ////////////STORAGE
   _loadStopsFromStorage = async () => {
     try {
       const value = await AsyncStorage.getItem('@Storage:stops');
@@ -189,43 +216,11 @@ export default class GlobalContextProvider extends Component {
     }
   };
 
-  toggleRadar = () => {
-    var coords = {
-      latitude: this.state.mapRegion.latitude,
-      longitude: this.state.mapRegion.longitude,
-    };
-    this.setState({
-      radar: {
-        ...this.state.radar,
-        isOn: !this.state.radar.isOn,
-        coordinates: coords,
-      },
-    });
-  };
-  setMapRegion = newRegion => {
-    this.setState({mapRegion: newRegion});
-  };
-
-  // setRadarCoordinates = newCoordinates => {
-  //   this.setState({radar: {...this.state.radar, coordinates: newCoordinates}});
-  // };
-  setRadarRadius = newRadius => {
-    this.setState({radar: {...this.state.radar, radiusKMs: newRadius}});
-  };
-
-  toggleLine = line => {
-    var linesSet = new Set(this.state.favLines);
-    if (linesSet.has(line)) linesSet.delete(line);
-    else linesSet.add(line);
-    let lines = [...linesSet];
-    this._saveFavLinesToStorage(lines);
-    this.setState({favLines: lines});
-  };
-
+  //////////////////LIFECYCLE
   async componentDidMount() {
     //allStops
     if ((await AsyncStorage.getItem('@Storage:stops')) == null) {
-      await this.downloadAllStops();
+      await this._downloadAllStops();
       await this._saveStopsToStorage(this.state.allStops);
     } else {
       await this._loadStopsFromStorage();
@@ -252,10 +247,7 @@ export default class GlobalContextProvider extends Component {
       navigateToUser: this.navigateToUser,
       toggleStopInFavs: this.toggleStopInFavs,
       navigateToMarkerAndSelect: this.navigateToMarkerAndSelect,
-      // stopsInBounds: this.stopsInBounds,
-      // updateVehicles: this._updateVehicles,
       toggleLine: this.toggleLine,
-      // setRadarCoordinates: this.setRadarCoordinates,
       setRadarRadius: this.setRadarRadius,
       toggleRadar: this.toggleRadar,
       setMapRegion: this.setMapRegion,

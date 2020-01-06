@@ -44,8 +44,10 @@ class VehicleMarker extends Component {
     this.animate(coordinate);
   }
   render() {
-    let {selectMarker} = this.props.globalContext;
+    let {selectMarker, favLines} = this.props.globalContext;
     let {t} = this.props.themeContext;
+    let isFav = favLines.find(e => e == this.props.vehicle.Lines) !== undefined;
+
     return (
       <Marker.Animated
         style={this.props.style}
@@ -59,6 +61,7 @@ class VehicleMarker extends Component {
         <View
           style={{
             ...styles.container,
+            borderWidth: isFav ? 1.4 : 0.7,
             backgroundColor: t.vehicleBgColor,
           }}
         >
@@ -76,7 +79,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     // borderRadius: 4,
     borderRadius: 40,
-    borderWidth: 0.7,
     borderStyle: 'solid',
     borderColor: '#DBA656',
     shadowColor: '#000',
@@ -84,8 +86,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     paddingHorizontal: 2,
-    width: 23,
-    height: 23,
+    width: 25,
+    height: 24,
     justifyContent: 'center',
   },
   text: {
