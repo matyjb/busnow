@@ -124,7 +124,7 @@ class GMap extends Component {
   _renderStopsMarkers() {
     if (this.state.mapRegion.latitudeDelta > 0.04) return [];
 
-    let clasters = this.state.mapRegion.latitudeDelta > 0.013;
+    let clasters = this.state.mapRegion.latitudeDelta > 0.025;
     if (clasters) {
       return this.state.stopsInBounds.map(c => (
         <StopClusterMarker key={c.unit} style={{zIndex: 1}} cluster={c} />

@@ -13,11 +13,14 @@ const StopMarker = props => {
   const {theme} = useContext(ThemeContext);
   const {selectMarker, selectedMarker} = useContext(GlobalContext);
   let icon;
+  let isSelected =
+    selectedMarker.unit == props.stop.unit &&
+    selectedMarker.nr == props.stop.nr;
   if (theme == 'dark') {
-    if (selectedMarker == props.stop) icon = icon_selected_dark;
+    if (isSelected) icon = icon_selected_dark;
     else icon = icon_dark;
   } else {
-    if (selectedMarker == props.stop) icon = icon_selected_light;
+    if (isSelected) icon = icon_selected_light;
     else icon = icon_light;
   }
   return (

@@ -71,8 +71,6 @@ export default class GlobalContextProvider extends Component {
   };
 
   navigateToMarkerAndSelect = marker => {
-    console.log('hello');
-
     this.map.animateToRegion(
       {
         latitude: marker.lat,
