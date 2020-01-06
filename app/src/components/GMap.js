@@ -10,6 +10,12 @@ import Geolocation from '@react-native-community/geolocation';
 import WarsawApi from '../WarsawApi';
 var moment = require('moment');
 
+const initRegion = {
+  latitude: 52.122801,
+  longitude: 21.018324,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
 const GEOLOCATION_OPTIONS = {
   enableHighAccuracy: true,
   timeout: 20000,
@@ -20,7 +26,8 @@ class GMap extends Component {
   state = {
     // vehicleMarkers: [],
     vehicles: [],
-    busStopsMarkers: [],
+    stopsInBounds: [],
+    mapRegion: initRegion,
   };
 
   _updateVehicles = async () => {
@@ -53,28 +60,6 @@ class GMap extends Component {
       }
     }
   };
-
-  getStopsMarkers(stops, clasters) {
-    if (clasters) {
-      return stops.map(c => (
-        <StopClusterMarker key={c.unit} style={{zIndex: 1}} cluster={c} />
-      ));
-    } else {
-      let output = [];
-      stops.forEach(c => {
-        c.stops.forEach(s => {
-          output.push(
-            <StopMarker
-              key={s.unit + ':' + s.nr}
-              style={{zIndex: 1}}
-              stop={s}
-            />
-          );
-        });
-      });
-      return output;
-    }
-  }
 
   componentDidMount() {
     this.mounted = true;
@@ -117,25 +102,55 @@ class GMap extends Component {
     clearInterval(this.interval);
   }
 
-  updateBusStopsMarkers = async (mapRegion, stopsInBounds) => {
-    let markers =
-      mapRegion.latitudeDelta < 0.03 &&
-      this.getStopsMarkers(stopsInBounds, mapRegion.latitudeDelta > 0.013);
-    this.setState({busStopsMarkers: markers});
+  updateBusStops = mapRegion => {
+    let {allStops} = this.props.globalContext;
+    let s = allStops.filter(e => {
+      if (
+        Math.abs(e.lat - mapRegion.latitude) < mapRegion.latitudeDelta &&
+        Math.abs(e.lon - mapRegion.longitude) < mapRegion.longitudeDelta
+      )
+        return true;
+      return false;
+    });
+
+    this.setState({stopsInBounds: s});
   };
 
+  _renderVehiclesMarkers() {
+    return this.state.vehicles.map(v => (
+      <VehicleMarker style={{zIndex: 2}} key={v.VehicleNumber} vehicle={v} />
+    ));
+  }
+  _renderStopsMarkers() {
+    if (this.state.mapRegion.latitudeDelta > 0.04) return [];
+
+    let clasters = this.state.mapRegion.latitudeDelta > 0.013;
+    if (clasters) {
+      return this.state.stopsInBounds.map(c => (
+        <StopClusterMarker key={c.unit} style={{zIndex: 1}} cluster={c} />
+      ));
+    } else {
+      let output = [];
+      this.state.stopsInBounds.forEach(c => {
+        c.stops.forEach(s => {
+          output.push(
+            <StopMarker
+              key={s.unit + ':' + s.nr}
+              style={{zIndex: 1}}
+              stop={s}
+            />
+          );
+        });
+      });
+      return output;
+    }
+  }
+
   render() {
-    const initRegion = {
-      latitude: 52.122801,
-      longitude: 21.018324,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    };
     let {t} = this.props.themeContext;
     let {
       setMapRegion,
       radar,
-      stopsInBounds,
       setMapRef,
       selectMarker,
     } = this.props.globalContext;
@@ -148,20 +163,15 @@ class GMap extends Component {
           rotateEnabled={false}
           style={{...StyleSheet.absoluteFillObject}}
           onRegionChangeComplete={mr => {
-            this.updateBusStopsMarkers(mr, stopsInBounds);
+            this.updateBusStops(mr);
             setMapRegion(mr);
+            this.setState({mapRegion: mr});
           }}
           showsUserLocation={true}
           onPress={() => selectMarker(null)}
         >
-          {this.state.vehicles.map(v => (
-            <VehicleMarker
-              style={{zIndex: 2}}
-              key={v.VehicleNumber}
-              vehicle={v}
-            />
-          ))}
-          {this.state.busStopsMarkers}
+          {this._renderVehiclesMarkers()}
+          {this._renderStopsMarkers()}
           {/* <UserLocationMarker /> */}
           {radar.isOn && (
             <Circle

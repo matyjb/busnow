@@ -16,7 +16,6 @@ export default class GlobalContextProvider extends Component {
     allStops: [],
     favLines: ['709', '739', '727', '185', '209', '401', '193', '737'],
     favStops: [],
-    stopsInBounds: [],
     // vehicles: [],
     mapRegion: {
       //lat lon is center of screen
@@ -98,20 +97,6 @@ export default class GlobalContextProvider extends Component {
       edgePadding: {top: 300, right: 200, bottom: 300, left: 200},
       animated: true,
     });
-  };
-
-  _setStopsInBounds = () => {
-    let s = this.state.allStops.filter(e => {
-      if (
-        Math.abs(e.lat - this.state.mapRegion.latitude) <
-          this.state.mapRegion.latitudeDelta &&
-        Math.abs(e.lon - this.state.mapRegion.longitude) <
-          this.state.mapRegion.longitudeDelta
-      )
-        return true;
-      return false;
-    });
-    this.setState({stopsInBounds: s});
   };
 
   downloadAllStops = async () => {
@@ -220,7 +205,7 @@ export default class GlobalContextProvider extends Component {
     });
   };
   setMapRegion = newRegion => {
-    this.setState({mapRegion: newRegion}, this._setStopsInBounds);
+    this.setState({mapRegion: newRegion});
   };
 
   // setRadarCoordinates = newCoordinates => {
