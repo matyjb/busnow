@@ -4,6 +4,12 @@ import {ThemeConstants} from '../constants/ThemeConstants';
 
 export const ThemeContext = createContext();
 
+export const withThemeContext = Component => props => (
+  <ThemeContext.Consumer>
+    {context => <Component themeContext={context} {...props} />}
+  </ThemeContext.Consumer>
+);
+
 export default class ThemeContextProvider extends Component {
   state = {
     theme: 'light',

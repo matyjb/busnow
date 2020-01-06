@@ -7,6 +7,12 @@ var moment = require('moment');
 
 export const GlobalContext = createContext();
 
+export const withGlobalContext = Component => props => (
+  <GlobalContext.Consumer>
+    {context => <Component globalContext={context} {...props} />}
+  </GlobalContext.Consumer>
+);
+
 export default class GlobalContextProvider extends Component {
   state = {
     allStops: [],

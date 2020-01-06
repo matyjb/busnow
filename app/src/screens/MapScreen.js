@@ -1,6 +1,6 @@
 import React from 'react';
 // import {StyleSheet} from 'react-native';
-import Map from '../components/Map';
+import GMap from '../components/GMap';
 import FabMapScreen from '../components/FabMapScreen';
 import BottomModal from '../components/BottomModal';
 import InfoBox from '../components/InfoBox';
@@ -13,7 +13,7 @@ class MapScreen extends React.Component {
   render() {
     return (
       <>
-        <Map />
+        <GMap />
         <InfoBox />
         <BottomModal
           _modalref={ref => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
 import {Marker, Callout} from 'react-native-maps';
 import {GlobalContext} from '../contexts/GlobalContext';
@@ -8,35 +8,27 @@ import icon_light_cluster from './../assets/icon_light_cluster.png';
 import icon_dark_cluster from './../assets/icon_dark_cluster.png';
 
 const StopClusterMarker = props => {
+  const {theme} = useContext(ThemeContext);
+  const {fitMapToClasterStops} = useContext(GlobalContext);
+  let icon;
+  if (theme == 'dark') icon = icon_dark_cluster;
+  else icon = icon_light_cluster;
   return (
-    <ThemeContext.Consumer>
-      {({theme}) => (
-        <GlobalContext.Consumer>
-          {({fitMapToClasterStops}) => {
-            let icon;
-            if (theme == 'dark') icon = icon_dark_cluster;
-            else icon = icon_light_cluster;
-            return (
-              <Marker
-                style={props.style}
-                coordinate={{
-                  latitude: props.cluster.lat,
-                  longitude: props.cluster.lon,
-                }}
-                image={icon}
-                tracksViewChanges={false}
-                onPress={() => fitMapToClasterStops(props.cluster)}
-              >
-                {/* workaround to hide callout */}
-                <Callout tooltip>
-                  <Text></Text>
-                </Callout>
-              </Marker>
-            );
-          }}
-        </GlobalContext.Consumer>
-      )}
-    </ThemeContext.Consumer>
+    <Marker
+      style={props.style}
+      coordinate={{
+        latitude: props.cluster.lat,
+        longitude: props.cluster.lon,
+      }}
+      image={icon}
+      tracksViewChanges={false}
+      onPress={() => fitMapToClasterStops(props.cluster)}
+    >
+      {/* workaround to hide callout */}
+      <Callout tooltip>
+        <Text></Text>
+      </Callout>
+    </Marker>
   );
 };
 

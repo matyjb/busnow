@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, PermissionsAndroid, Platform} from 'react-native';
-import {ThemeContext} from '../contexts/ThemeContext';
-import {GlobalContext} from '../contexts/GlobalContext';
+import {withThemeContext} from '../contexts/ThemeContext';
+import {withGlobalContext} from '../contexts/GlobalContext';
 import MapView, {Circle} from 'react-native-maps';
 import VehicleMarker from './VehicleMarker';
 import StopMarker from './StopMarker';
@@ -14,7 +14,7 @@ const GEOLOCATION_OPTIONS = {
   maximumAge: 1000,
 };
 
-export default class Map extends Component {
+class GMap extends Component {
   state = {
     // vehicleMarkers: [],
     busStopsMarkers: [],
@@ -92,60 +92,56 @@ export default class Map extends Component {
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     };
+    let {t} = this.props.themeContext;
+    let {
+      vehicles,
+      setMapRegion,
+      radar,
+      stopsInBounds,
+      setMapRef,
+      selectMarker,
+    } = this.props.globalContext;
     return (
-      <ThemeContext.Consumer>
-        {({t}) => (
-          <GlobalContext.Consumer>
-            {({
-              vehicles,
-              setMapRegion,
-              radar,
-              stopsInBounds,
-              setMapRef,
-              selectMarker,
-            }) => (
-              <View style={styles.container}>
-                <MapView
-                  ref={setMapRef}
-                  customMapStyle={t.mapStyle}
-                  initialRegion={initRegion}
-                  rotateEnabled={false}
-                  style={{...StyleSheet.absoluteFillObject}}
-                  onRegionChangeComplete={mr => {
-                    this.updateBusStopsMarkers(mr, stopsInBounds);
-                    setMapRegion(mr);
-                  }}
-                  showsUserLocation={true}
-                  onPress={() => selectMarker(null)}
-                >
-                  {vehicles.map(v => (
-                    <VehicleMarker
-                      style={{zIndex: 2}}
-                      key={v.VehicleNumber}
-                      vehicle={v}
-                    />
-                  ))}
-                  {this.state.busStopsMarkers}
-                  {/* <UserLocationMarker /> */}
-                  {radar.isOn && (
-                    <Circle
-                      style={{zIndex: 0}}
-                      center={radar.coordinates}
-                      radius={radar.radiusKMs * 1000}
-                      strokeWidth={1}
-                      strokeColor={t.radarStrokeColor}
-                      fillColor={t.radarFillColor}
-                    />
-                  )}
-                </MapView>
-              </View>
-            )}
-          </GlobalContext.Consumer>
-        )}
-      </ThemeContext.Consumer>
+      <View style={styles.container}>
+        <MapView
+          ref={setMapRef}
+          customMapStyle={t.mapStyle}
+          initialRegion={initRegion}
+          rotateEnabled={false}
+          style={{...StyleSheet.absoluteFillObject}}
+          onRegionChangeComplete={mr => {
+            this.updateBusStopsMarkers(mr, stopsInBounds);
+            setMapRegion(mr);
+          }}
+          showsUserLocation={true}
+          onPress={() => selectMarker(null)}
+        >
+          {vehicles.map(v => (
+            <VehicleMarker
+              style={{zIndex: 2}}
+              key={v.VehicleNumber}
+              vehicle={v}
+            />
+          ))}
+          {this.state.busStopsMarkers}
+          {/* <UserLocationMarker /> */}
+          {radar.isOn && (
+            <Circle
+              style={{zIndex: 0}}
+              center={radar.coordinates}
+              radius={radar.radiusKMs * 1000}
+              strokeWidth={1}
+              strokeColor={t.radarStrokeColor}
+              fillColor={t.radarFillColor}
+            />
+          )}
+        </MapView>
+      </View>
     );
   }
 }
+
+export default withThemeContext(withGlobalContext(GMap));
 
 const styles = StyleSheet.create({
   container: {

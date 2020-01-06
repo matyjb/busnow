@@ -3,9 +3,8 @@ import {Text, StyleSheet, View, Dimensions} from 'react-native';
 import {AnimatedRegion, Marker} from 'react-native-maps';
 import PropTypes from 'prop-types';
 
-import {ThemeContext} from '../contexts/ThemeContext';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {GlobalContext} from '../contexts/GlobalContext';
+import {withThemeContext} from '../contexts/ThemeContext';
+import {withGlobalContext} from '../contexts/GlobalContext';
 
 const screen = Dimensions.get('window');
 
@@ -45,35 +44,29 @@ class VehicleMarker extends Component {
     this.animate(coordinate);
   }
   render() {
+    let {selectMarker} = this.props.globalContext;
+    let {t} = this.props.themeContext;
     return (
-      <GlobalContext.Consumer>
-        {({selectMarker}) => (
-          <Marker.Animated
-            style={this.props.style}
-            ref={marker => {
-              this.marker = marker;
-            }}
-            coordinate={this.state.coordinate}
-            tracksViewChanges={false}
-            onPress={() => selectMarker(this.props.vehicle)}
-          >
-            <ThemeContext.Consumer>
-              {({t}) => (
-                <View
-                  style={{
-                    ...styles.container,
-                    backgroundColor: t.vehicleBgColor,
-                  }}
-                >
-                  <Text style={{...styles.text, color: t.textColor}}>
-                    {this.props.vehicle.Lines}
-                  </Text>
-                </View>
-              )}
-            </ThemeContext.Consumer>
-          </Marker.Animated>
-        )}
-      </GlobalContext.Consumer>
+      <Marker.Animated
+        style={this.props.style}
+        ref={marker => {
+          this.marker = marker;
+        }}
+        coordinate={this.state.coordinate}
+        tracksViewChanges={false}
+        onPress={() => selectMarker(this.props.vehicle)}
+      >
+        <View
+          style={{
+            ...styles.container,
+            backgroundColor: t.vehicleBgColor,
+          }}
+        >
+          <Text style={{...styles.text, color: t.textColor}}>
+            {this.props.vehicle.Lines}
+          </Text>
+        </View>
+      </Marker.Animated>
     );
   }
 }
@@ -117,4 +110,4 @@ VehicleMarker.propTypes = {
   }).isRequired,
 };
 
-export default VehicleMarker;
+export default withThemeContext(withGlobalContext(VehicleMarker));

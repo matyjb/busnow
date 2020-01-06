@@ -1,24 +1,23 @@
 import React, {Component} from 'react';
-import {Text, StyleSheet, View} from 'react-native';
-import {GlobalContext} from '../contexts/GlobalContext';
+// import {StyleSheet} from 'react-native';
+import {withGlobalContext} from '../contexts/GlobalContext';
 import InfoBoxBus from './InfoBoxBus';
 import InfoBoxBusStop from './InfoBoxBusStop';
 
-export default class InfoBox extends Component {
+class InfoBox extends Component {
   render() {
+    let {selectedMarker} = this.props.globalContext;
     return (
-      <GlobalContext.Consumer>
-        {({selectedMarker}) =>
-          selectedMarker &&
-          (selectedMarker.Lines ? (
-            <InfoBoxBus selectedMarker={selectedMarker} />
-          ) : (
-            <InfoBoxBusStop selectedMarker={selectedMarker} />
-          ))
-        }
-      </GlobalContext.Consumer>
+      selectedMarker &&
+      (selectedMarker.Lines ? (
+        <InfoBoxBus selectedMarker={selectedMarker} />
+      ) : (
+        <InfoBoxBusStop selectedMarker={selectedMarker} />
+      ))
     );
   }
 }
 
-const styles = StyleSheet.create({});
+// const styles = StyleSheet.create({});
+
+export default withGlobalContext(InfoBox);

@@ -1,42 +1,42 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {Text, StyleSheet, View} from 'react-native';
-import {ThemeContext} from '../contexts/ThemeContext';
+import {withThemeContext} from '../contexts/ThemeContext';
 import PropTypes from 'prop-types';
 
-export default class LineTag extends Component {
+class LineTag extends PureComponent {
   render() {
     let leavingTimeFormatted = Math.floor(this.props.leavesIn);
     if (leavingTimeFormatted >= 60)
       leavingTimeFormatted = Math.floor(leavingTimeFormatted / 60) + ' godz';
     else leavingTimeFormatted += ' min';
+
+    const {t} = this.props.themeContext;
     return (
-      <ThemeContext.Consumer>
-        {({t}) => (
-          <View
-            style={
-              this.props.isFav
-                ? {
-                    ...styles.container,
-                    ...styles.containerFav,
-                    backgroundColor: t.secondaryColor,
-                  }
-                : {...styles.container, backgroundColor: t.secondaryColor}
-            }
-          >
-            <Text style={{...styles.text, color: t.textColor}}>
-              {this.props.line}
-            </Text>
-            {this.props.leavesIn && (
-              <Text style={{...styles.text, color: t.textColor}}>
-                {leavingTimeFormatted}
-              </Text>
-            )}
-          </View>
+      <View
+        style={
+          this.props.isFav
+            ? {
+                ...styles.container,
+                ...styles.containerFav,
+                backgroundColor: t.secondaryColor,
+              }
+            : {...styles.container, backgroundColor: t.secondaryColor}
+        }
+      >
+        <Text style={{...styles.text, color: t.textColor}}>
+          {this.props.line}
+        </Text>
+        {this.props.leavesIn && (
+          <Text style={{...styles.text, color: t.textColor}}>
+            {leavingTimeFormatted}
+          </Text>
         )}
-      </ThemeContext.Consumer>
+      </View>
     );
   }
 }
+
+export default withThemeContext(LineTag);
 
 const styles = StyleSheet.create({
   container: {

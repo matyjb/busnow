@@ -1,94 +1,86 @@
 import React, {Component} from 'react';
 import {Text, StyleSheet} from 'react-native';
 import Modal from 'react-native-modalbox';
-import {ThemeContext} from '../contexts/ThemeContext';
+import {withThemeContext} from '../contexts/ThemeContext';
 import {Button, Icon, View} from 'native-base';
 import {withNavigation} from 'react-navigation';
-import {GlobalContext} from '../contexts/GlobalContext';
+import {withGlobalContext} from '../contexts/GlobalContext';
 import {FlatList} from 'react-native-gesture-handler';
 
 class BottomModal extends Component {
   render() {
+    let {t} = this.props.themeContext;
+    let {favStops, navigateToMarkerAndSelect} = this.props.globalContext;
     return (
-      <ThemeContext.Consumer>
-        {({t}) => (
-          <GlobalContext.Consumer>
-            {({favStops, navigateToMarkerAndSelect}) => (
-              <Modal
-                style={{
-                  ...this.props.style,
-                  ...styles.container,
-                  backgroundColor: t.primaryColor,
+      <Modal
+        style={{
+          ...this.props.style,
+          ...styles.container,
+          backgroundColor: t.primaryColor,
+        }}
+        position={'bottom'}
+        backButtonClose
+        ref={r => {
+          this.props._modalref(r);
+          this._modal = r;
+        }}
+        swipeArea={styles.iconsContainer.height}
+      >
+        <View style={styles.iconsContainer}>
+          <Button
+            transparent
+            onPress={() => this.props.navigation.navigate('Settings')}
+          >
+            <Icon
+              style={styles.icon}
+              name="md-settings"
+              style={{color: t.accentColor}}
+            />
+          </Button>
+          <Button transparent onPress={() => {}}>
+            <Icon
+              style={styles.icon}
+              name="star"
+              style={{color: t.accentColor}}
+              type="AntDesign"
+            />
+          </Button>
+        </View>
+        <View style={{backgroundColor: t.accentColor, height: 2}} />
+        <View style={{paddingHorizontal: 10}}>
+          <FlatList
+            style={{
+              height: styles.container.height - styles.iconsContainer.height,
+            }}
+            data={favStops}
+            keyExtractor={(_, i) => i.toString()}
+            renderItem={({item}) => (
+              <FlatListItem
+                item={item}
+                t={t}
+                onPress={() => {
+                  this._modal.close();
+                  navigateToMarkerAndSelect(item);
                 }}
-                position={'bottom'}
-                backButtonClose
-                ref={r => {
-                  this.props._modalref(r);
-                  this._modal = r;
-                }}
-                swipeArea={styles.iconsContainer.height}
-              >
-                <View style={styles.iconsContainer}>
-                  <Button
-                    transparent
-                    onPress={() => this.props.navigation.navigate('Settings')}
-                  >
-                    <Icon
-                      style={styles.icon}
-                      name="md-settings"
-                      style={{color: t.accentColor}}
-                    />
-                  </Button>
-                  <Button transparent onPress={() => {}}>
-                    <Icon
-                      style={styles.icon}
-                      name="star"
-                      style={{color: t.accentColor}}
-                      type="AntDesign"
-                    />
-                  </Button>
-                </View>
-                <View style={{backgroundColor: t.accentColor, height: 2}} />
-                <View style={{paddingHorizontal: 10}}>
-                  <FlatList
-                    style={{
-                      height:
-                        styles.container.height - styles.iconsContainer.height,
-                    }}
-                    data={favStops}
-                    keyExtractor={(_, i) => i.toString()}
-                    renderItem={({item}) => (
-                      <FlatListItem
-                        item={item}
-                        t={t}
-                        onPress={() => {
-                          this._modal.close();
-                          navigateToMarkerAndSelect(item);
-                        }}
-                      />
-                    )}
-                    ListHeaderComponent={() => <View style={{height: 10}} />}
-                    ListFooterComponent={() => <View style={{height: 10}} />}
-                    ItemSeparatorComponent={() => <View style={{height: 10}} />}
-                    ListEmptyComponent={() => (
-                      <Text
-                        style={{
-                          color: t.textColor,
-                          padding: 10,
-                          textAlign: 'center',
-                        }}
-                      >
-                        Dodaj pare przystanków do ulubionych by je tutaj
-                        zobaczyć
-                      </Text>
-                    )}
-                  />
-                </View>
-              </Modal>
+              />
             )}
-          </GlobalContext.Consumer>
-        )}
-      </ThemeContext.Consumer>
+            ListHeaderComponent={() => <View style={{height: 10}} />}
+            ListFooterComponent={() => <View style={{height: 10}} />}
+            ItemSeparatorComponent={() => <View style={{height: 10}} />}
+            ListEmptyComponent={() => (
+              <Text
+                style={{
+                  color: t.textColor,
+                  padding: 10,
+                  textAlign: 'center',
+                }}
+              >
+                Dodaj pare przystanków do ulubionych by je tutaj zobaczyć
+              </Text>
+            )}
+          />
+        </View>
+      </Modal>
     );
   }
 }
@@ -137,4 +129,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withNavigation(BottomModal);
+export default withNavigation(withThemeContext(withGlobalContext(BottomModal)));

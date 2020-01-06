@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
-import {Text, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
 import LineTag from './LineTag';
 import WarsawApi from '../WarsawApi';
-import {GlobalContext} from '../contexts/GlobalContext';
+import {withGlobalContext} from '../contexts/GlobalContext';
 
 var moment = require('moment');
 
-export default class LineTagRow extends Component {
+class LineTagRow extends Component {
   state = {
     lines: [],
   };
@@ -134,24 +134,23 @@ export default class LineTagRow extends Component {
   };
 
   render() {
+    let {favLines} = this.props.globalContext;
     return (
-      <GlobalContext.Consumer>
-        {({favLines}) => (
-          <View style={styles.container}>
-            {this.state.lines.map((e, i) => (
-              <LineTag
-                key={i}
-                leavesIn={e.leavesIn}
-                line={e.line}
-                isFav={favLines.find(line => line == e.line) !== undefined}
-              />
-            ))}
-          </View>
-        )}
-      </GlobalContext.Consumer>
+      <View style={styles.container}>
+        {this.state.lines.map((e, i) => (
+          <LineTag
+            key={i}
+            leavesIn={e.leavesIn}
+            line={e.line}
+            isFav={favLines.find(line => line == e.line) !== undefined}
+          />
+        ))}
+      </View>
     );
   }
 }
+
+export default withGlobalContext(LineTagRow);
 
 const styles = StyleSheet.create({
   container: {
