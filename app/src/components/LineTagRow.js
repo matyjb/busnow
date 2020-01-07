@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import LineTag from './LineTag';
 import WarsawApi from '../WarsawApi';
 import {withGlobalContext} from '../contexts/GlobalContext';
+import {ThemeContext} from '../contexts/ThemeContext';
+import {Icon, Button} from 'native-base';
+import {withNavigation} from 'react-navigation';
 
 var moment = require('moment');
 
@@ -13,13 +16,16 @@ class LineTagRow extends Component {
   };
 
   async componentDidMount() {
-    await this._initState(this.props.unit, this.props.nr);
+    await this._initState(this.props.stop.unit, this.props.stop.nr);
     this.interval = setInterval(this._updateLeavingTimes, 60000);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.unit != this.props.unit || nextProps.nr != this.props.nr) {
-      this._initState(nextProps.unit, nextProps.nr);
+    if (
+      nextProps.stop.unit != this.props.stop.unit ||
+      nextProps.stop.nr != this.props.stop.nr
+    ) {
+      this._initState(nextProps.stop.unit, nextProps.stop.nr);
     }
   }
 
@@ -62,6 +68,7 @@ class LineTagRow extends Component {
               //nocny
               d += 24 * 60;
             }
+
             l[i].leavesIn = d;
           } else {
             //calc leavesIn
@@ -122,7 +129,8 @@ class LineTagRow extends Component {
         }
         // kolejny jest jutro
         let leaveTime = this.parseTime(e.timetable[0].values[5].value);
-        let d = moment.duration(leaveTime.diff(currentTime)).asMinutes();
+        let d =
+          moment.duration(leaveTime.diff(currentTime)).asMinutes() + 24 * 60;
         if (this.isNightBus(e.timetable[0].values[5].value)) {
           //nocny
           d += 24 * 60;
@@ -133,10 +141,30 @@ class LineTagRow extends Component {
     });
   };
 
+  onSchedulePressed = () => {
+    this.props.navigation.navigate('Schedule', {
+      stop: this.props.stop,
+      lines: this.state.lines,
+    });
+  };
+
   render() {
     let {favLines} = this.props.globalContext;
     return (
       <View style={styles.container}>
+        {this.state.lines.length != 0 && (
+          <ThemeContext.Consumer>
+            {({t}) => (
+              <Button transparent onPress={this.onSchedulePressed}>
+                <Icon
+                  style={{color: t.textColor}}
+                  name="timetable"
+                  type="MaterialCommunityIcons"
+                />
+              </Button>
+            )}
+          </ThemeContext.Consumer>
+        )}
         {this.state.lines.map((e, i) => (
           <LineTag
             key={i}
@@ -150,7 +178,7 @@ class LineTagRow extends Component {
   }
 }
 
-export default withGlobalContext(LineTagRow);
+export default withNavigation(withGlobalContext(LineTagRow));
 
 const styles = StyleSheet.create({
   container: {
@@ -161,6 +189,8 @@ const styles = StyleSheet.create({
 });
 
 LineTagRow.propTypes = {
-  unit: PropTypes.string.isRequired,
-  nr: PropTypes.string.isRequired,
+  stop: PropTypes.shape({
+    unit: PropTypes.string.isRequired,
+    nr: PropTypes.string.isRequired,
+  }).isRequired,
 };

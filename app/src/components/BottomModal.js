@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   },
   iconsContainer: {
     flexDirection: 'row',
-    alignContent: 'space-between',
+    justifyContent: 'space-between',
     height: 50,
   },
   icon: {

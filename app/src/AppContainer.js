@@ -4,6 +4,7 @@ import {createStackNavigator} from 'react-navigation-stack';
 import MapScreen from './screens/MapScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import {ThemeContext} from './contexts/ThemeContext';
+import ScheduleScreen from './screens/ScheduleScreen';
 
 const Stack = createStackNavigator(
   {
@@ -12,6 +13,9 @@ const Stack = createStackNavigator(
     },
     Settings: {
       screen: SettingsScreen,
+    },
+    Schedule: {
+      screen: ScheduleScreen,
     },
   },
   {

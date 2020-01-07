@@ -5,6 +5,7 @@ import {Icon, Button} from 'native-base';
 import PropTypes from 'prop-types';
 import LineTagRow from './LineTagRow';
 import {GlobalContext} from '../contexts/GlobalContext';
+import {withNavigation} from 'react-navigation';
 
 class InfoBoxBusStop extends Component {
   render() {
@@ -27,7 +28,11 @@ class InfoBoxBusStop extends Component {
             <Text style={{...styles.mainText, color: t.textColor}}>
               {selectedMarker.name} {selectedMarker.nr && selectedMarker.nr}
             </Text>
-            <LineTagRow unit={selectedMarker.unit} nr={selectedMarker.nr} />
+            <LineTagRow
+              // unit={selectedMarker.unit}
+              // nr={selectedMarker.nr}
+              stop={selectedMarker}
+            />
           </View>
           <GlobalContext.Consumer>
             {({toggleStopInFavs, favStops}) => {
@@ -87,4 +92,4 @@ InfoBoxBusStop.propTypes = {
   }).isRequired,
 };
 
-export default withThemeContext(InfoBoxBusStop);
+export default withNavigation(withThemeContext(InfoBoxBusStop));

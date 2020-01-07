@@ -28,82 +28,40 @@ class GMap extends Component {
     vehicles: [],
     stopsInBounds: [],
     mapRegion: initRegion,
+    radarLines: [],
   };
 
-  _updateVehicles = async () => {
-    let {
-      favLines,
-      selectedMarker,
-      selectMarker,
-      allStops,
-      radar,
-    } = this.props.globalContext;
-    var vehiclesFiltered = [];
-
-    let radarLines = new Set();
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    let {radar} = this.props.globalContext;
+    let nextRadar = nextProps.globalContext.radar;
+    if (!nextRadar.coordinates) {
+      this.setState({radarLines: []});
+      return;
+    }
     if (radar.coordinates) {
-      const earthRadiusKm = 6371;
-      // zebrac wszystkie przystanki co są w radiusie (klastry)
-      let stops = allStops.filter(e => {
-        let latRadar = (radar.coordinates.latitude * Math.PI) / 180;
-        let lonRadar = (radar.coordinates.longitude * Math.PI) / 180;
-        let latStop = (e.lat * Math.PI) / 180;
-        let lonStop = (e.lon * Math.PI) / 180;
-        let dLat = latStop - latRadar;
-        let dLon = lonStop - lonRadar;
-
-        var a =
-          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-          Math.sin(dLon / 2) *
-            Math.sin(dLon / 2) *
-            Math.cos(latRadar) *
-            Math.cos(latStop);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return earthRadiusKm * c < radar.radiusKMs + 200;
-      });
-      // zebrac wszystkie linesy z przystankow
-      //   // FOREACH//pushowac do radarLines wszystkie linie z kazdego znalezionego przystanku
-      for (const cluster of stops) {
-        // SUGGESTION: zrobić by kazdy przystanek mial juz za wczasu pobrane jakie autobusy tam jezdza ????????
-        for (const s of cluster.stops) {
-          let lines = await WarsawApi.getStopLines(s.unit, s.nr);
-          lines.forEach(l => {
-            if (!favLines.find(e => e == l.values[0].value))
-              radarLines.add(l.values[0].value);
-          });
-        }
+      //radar.coordinates is not null
+      if (!nextRadar.coordinates) {
+        //nextRadar.coordinates is null
+        this._updateRadarLines();
+      }
+    } else {
+      //radar.coordinates is null
+      if (nextRadar.coordinates) {
+        //nextRadar.coordinates is not null
+        this._updateRadarLines();
       }
     }
-    console.log(radarLines);
+  }
 
-    var timeNow = moment();
+  _updateRadarLines = async () => {
+    console.log('_updateRadarLines');
 
-    for (const i of favLines) {
-      var line = await WarsawApi.getLine(i, i < 100 ? 2 : 1);
-      line.forEach(v => {
-        var timeVehicle = moment(v.Time);
-        var duration = moment.duration(timeNow.diff(timeVehicle));
-        var seconds = duration.asSeconds();
-        if (seconds < 50) vehiclesFiltered.push(v);
-      });
-    }
-    for (const i of radarLines) {
-      var line = await WarsawApi.getLine(i, i < 100 ? 2 : 1);
-      line.forEach(v => {
-        var timeVehicle = moment(v.Time);
-        var duration = moment.duration(timeNow.diff(timeVehicle));
-        var seconds = duration.asSeconds();
-        if (seconds < 50) vehiclesFiltered.push(v);
-      });
-    }
+    let {favLines, allStops, radar} = this.props.globalContext;
 
-    //TODO: get all vehicles inside radar radius
-    // zmienna linesToDownload = new Set(favLines);
-    // let favLinesSet = new Set(favLines);
-    // let linesToDownload = new Set(favLines);
+    let radarLinesSet = new Set(this.state.radarLines);
     // if (radar.coordinates) {
-    //   // zebrac wszystkie przystanki co są w radiusie
     //   const earthRadiusKm = 6371;
+    //   // zebrac wszystkie przystanki co są w radiusie (klastry)
     //   let stops = allStops.filter(e => {
     //     let latRadar = (radar.coordinates.latitude * Math.PI) / 180;
     //     let lonRadar = (radar.coordinates.longitude * Math.PI) / 180;
@@ -119,39 +77,54 @@ class GMap extends Component {
     //         Math.cos(latRadar) *
     //         Math.cos(latStop);
     //     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    //     return earthRadiusKm * c < radar.radiusKMs;
+    //     return earthRadiusKm * c < radar.radiusKMs + 0.1;
     //   });
     //   // zebrac wszystkie linesy z przystankow
-    //   // FOREACH//pushowac do linesToDownload wszystkie linie z kazdego znalezionego przystanku
-    //   for (const s of stops) {
+    //   //   // FOREACH//pushowac do radarLinesSet wszystkie linie z kazdego znalezionego przystanku
+    //   console.log(stops.length);
+
+    //   for (const cluster of stops) {
     //     // SUGGESTION: zrobić by kazdy przystanek mial juz za wczasu pobrane jakie autobusy tam jezdza ????????
-    //     let lines = await WarsawApi.getStopLines(s.unit, s.nr);
-    //     lines.forEach(l => linesToDownload.add(l.values[0].value));
-    //   }
-    // }
-    // // dla kazdej linii w linesToDownload odpalić api
-    // for (const line of linesToDownload) {
-    //   let vehicles = await WarsawApi.getLine(line, line < 100 ? 2 : 1);
-    //   // FOREACH^//kazdy wynik z kadego odpalenia api sprawdzić czy jest w radiusie if jest -> push do vehiclesFiltered (jezeli nie jest ulubionym)
-    //   var timeNow = moment();
-    //   if (favLinesSet.has(line)) {
-    //     vehicles.forEach(v => {
-    //       let timeVehicle = moment(v.Time);
-    //       let duration = moment.duration(timeNow.diff(timeVehicle));
-    //       let seconds = duration.asSeconds();
-    //       if (seconds < 50) vehiclesFiltered.push(v);
-    //     });
-    //   } else {
-    //     let timeVehicle = moment(v.Time);
-    //     let duration = moment.duration(timeNow.diff(timeVehicle));
-    //     let seconds = duration.asSeconds();
-    //     if (seconds < 50) {
-    //       if (/*is in radius? */ true) {
-    //         vehiclesFiltered.push(v);
-    //       }
+    //     for (const s of cluster.stops) {
+    //       let lines = await WarsawApi.getStopLines(s.unit, s.nr);
+    //       lines.forEach(l => {
+    //         if (!favLines.find(e => e == l.values[0].value))
+    //           radarLinesSet.add(l.values[0].value);
+    //       });
     //     }
     //   }
     // }
+    console.log(radarLinesSet);
+    this.setState(
+      {radarLines: Array.from(radarLinesSet)},
+      this._updateVehicles
+    );
+  };
+
+  _updateVehicles = async () => {
+    let {favLines, selectedMarker, selectMarker} = this.props.globalContext;
+    var vehiclesFiltered = [];
+
+    var timeNow = moment();
+
+    for (const i of favLines) {
+      var line = await WarsawApi.getLine(i, i < 100 ? 2 : 1);
+      line.forEach(v => {
+        var timeVehicle = moment(v.Time);
+        var duration = moment.duration(timeNow.diff(timeVehicle));
+        var seconds = duration.asSeconds();
+        if (seconds < 360) vehiclesFiltered.push(v);
+      });
+    }
+    for (const i of this.state.radarLines) {
+      var line = await WarsawApi.getLine(i, i < 100 ? 2 : 1);
+      line.forEach(v => {
+        var timeVehicle = moment(v.Time);
+        var duration = moment.duration(timeNow.diff(timeVehicle));
+        var seconds = duration.asSeconds();
+        if (seconds < 360) vehiclesFiltered.push(v);
+      });
+    }
 
     this.setState({vehicles: vehiclesFiltered});
 
@@ -229,9 +202,9 @@ class GMap extends Component {
     ));
   }
   _renderStopsMarkers() {
-    if (this.state.mapRegion.latitudeDelta > 0.04) return [];
+    if (this.state.mapRegion.latitudeDelta > 0.035) return [];
 
-    let clasters = this.state.mapRegion.latitudeDelta > 0.025;
+    let clasters = this.state.mapRegion.latitudeDelta > 0.02;
     if (clasters) {
       return this.state.stopsInBounds.map(c => (
         <StopClusterMarker key={c.unit} style={{zIndex: 1}} cluster={c} />

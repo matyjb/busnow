@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {Icon, Button, Fab} from 'native-base';
 import {withThemeContext} from '../contexts/ThemeContext';
 import {withGlobalContext} from '../contexts/GlobalContext';
-import {withNavigation} from 'react-navigation';
 
 class FabMapScreen extends Component {
   render() {
@@ -44,6 +43,4 @@ class FabMapScreen extends Component {
     );
   }
 }
-export default withNavigation(
-  withThemeContext(withGlobalContext(FabMapScreen))
-);
+export default withThemeContext(withGlobalContext(FabMapScreen));
