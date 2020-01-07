@@ -14,6 +14,7 @@ const StopMarker = props => {
   const {selectMarker, selectedMarker} = useContext(GlobalContext);
   let icon;
   let isSelected =
+    selectedMarker &&
     selectedMarker.unit == props.stop.unit &&
     selectedMarker.nr == props.stop.nr;
   if (theme == 'dark') {
