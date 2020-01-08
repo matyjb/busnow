@@ -34,6 +34,7 @@ class GMap extends Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     let {radar} = this.props.globalContext;
     let nextRadar = nextProps.globalContext.radar;
+    
     if (!nextRadar.coordinates) {
       this.setState({radarLines: []});
       return;
@@ -42,12 +43,14 @@ class GMap extends Component {
       //radar.coordinates is not null
       if (!nextRadar.coordinates) {
         //nextRadar.coordinates is null
+        console.log(radar, nextRadar);
         this._updateRadarLines();
       }
     } else {
       //radar.coordinates is null
       if (nextRadar.coordinates) {
         //nextRadar.coordinates is not null
+        console.log(radar, nextRadar);
         this._updateRadarLines();
       }
     }
@@ -59,41 +62,40 @@ class GMap extends Component {
     let {favLines, allStops, radar} = this.props.globalContext;
 
     let radarLinesSet = new Set(this.state.radarLines);
-    // if (radar.coordinates) {
-    //   const earthRadiusKm = 6371;
-    //   // zebrac wszystkie przystanki co są w radiusie (klastry)
-    //   let stops = allStops.filter(e => {
-    //     let latRadar = (radar.coordinates.latitude * Math.PI) / 180;
-    //     let lonRadar = (radar.coordinates.longitude * Math.PI) / 180;
-    //     let latStop = (e.lat * Math.PI) / 180;
-    //     let lonStop = (e.lon * Math.PI) / 180;
-    //     let dLat = latStop - latRadar;
-    //     let dLon = lonStop - lonRadar;
+    console.log(radar);
+    if (radar.coordinates) {
+      const earthRadiusKm = 6371;
+      // zebrac wszystkie przystanki co są w radiusie (klastry)
+      let stops = allStops.filter(e => {
+        let latRadar = (radar.coordinates.latitude * Math.PI) / 180;
+        let lonRadar = (radar.coordinates.longitude * Math.PI) / 180;
+        let latStop = (e.lat * Math.PI) / 180;
+        let lonStop = (e.lon * Math.PI) / 180;
+        let dLat = latStop - latRadar;
+        let dLon = lonStop - lonRadar;
 
-    //     var a =
-    //       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    //       Math.sin(dLon / 2) *
-    //         Math.sin(dLon / 2) *
-    //         Math.cos(latRadar) *
-    //         Math.cos(latStop);
-    //     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    //     return earthRadiusKm * c < radar.radiusKMs + 0.1;
-    //   });
-    //   // zebrac wszystkie linesy z przystankow
-    //   //   // FOREACH//pushowac do radarLinesSet wszystkie linie z kazdego znalezionego przystanku
-    //   console.log(stops.length);
+        var a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.sin(dLon / 2) *
+            Math.sin(dLon / 2) *
+            Math.cos(latRadar) *
+            Math.cos(latStop);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return earthRadiusKm * c < radar.radiusKMs + 0.1;
+      });
+      // zebrac wszystkie linesy z przystankow
+      //   // FOREACH//pushowac do radarLinesSet wszystkie linie z kazdego znalezionego przystanku
+      console.log(stops.length);
 
-    //   for (const cluster of stops) {
-    //     // SUGGESTION: zrobić by kazdy przystanek mial juz za wczasu pobrane jakie autobusy tam jezdza ????????
-    //     for (const s of cluster.stops) {
-    //       let lines = await WarsawApi.getStopLines(s.unit, s.nr);
-    //       lines.forEach(l => {
-    //         if (!favLines.find(e => e == l.values[0].value))
-    //           radarLinesSet.add(l.values[0].value);
-    //       });
-    //     }
-    //   }
-    // }
+      for (const cluster of stops) {
+        for (const s of cluster.stops) {
+          let lines = s.lines;
+          lines.forEach(l => {
+            if (!favLines.find(e => e == l)) radarLinesSet.add(l);
+          });
+        }
+      }
+    }
     console.log(radarLinesSet);
     this.setState(
       {radarLines: Array.from(radarLinesSet)},
