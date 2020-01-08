@@ -127,7 +127,7 @@ export default class GlobalContextProvider extends Component {
     console.log('downloading stops started');
     let stops = await WarsawApi.getStops();
     if (stops.length != 0) {
-      await this._saveStopsToStorage(this.state.allStops);
+      await this._saveStopsToStorage(stops);
       this.setState({allStops: stops});
       console.log('saved ', stops.length, 'stops');
     }

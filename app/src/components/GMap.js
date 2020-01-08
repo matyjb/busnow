@@ -192,7 +192,6 @@ class GMap extends Component {
         return true;
       return false;
     });
-
     this.setState({stopsInBounds: s});
   };
 
@@ -205,6 +204,7 @@ class GMap extends Component {
     if (this.state.mapRegion.latitudeDelta > 0.035) return [];
 
     let clasters = this.state.mapRegion.latitudeDelta > 0.02;
+
     if (clasters) {
       return this.state.stopsInBounds.map(c => (
         <StopClusterMarker key={c.unit} style={{zIndex: 1}} cluster={c} />

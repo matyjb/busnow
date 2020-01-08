@@ -45,7 +45,7 @@ class WarsawApi extends React.Component {
   }
 
   static async getStops() {
-    var url = "https://europe-west1-bus-now-257020.cloudfunctions.net/getStops";
+    var url = 'https://europe-west1-bus-now-257020.cloudfunctions.net/getStops';
     var res = await WarsawApi._fetchApi(url, 'getLine');
     if (Array.isArray(res)) {
       return res;

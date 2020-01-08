@@ -98,16 +98,13 @@ class LineTagRow extends Component {
     // 	timetableIndex: 0 <--- wskazuje na najblizszy przyjazd
     // 	leavesIn: 2 <---- aktualizuje sie co sekunde ( w dól) jak bedzie -1 to index o jeden do gory i wyliczeni na nowo leavesIn
     // }
-    let lines = await WarsawApi.getStopLines(unit, nr);
+    // let lines = await WarsawApi.getStopLines(unit, nr);
+    let lines = this.props.stop.lines;
     Promise.all(
       lines.map(async e => {
-        let timetable = await WarsawApi.getStopLineSchedule(
-          unit,
-          nr,
-          e.values[0].value
-        );
+        let timetable = await WarsawApi.getStopLineSchedule(unit, nr, e);
 
-        return {line: e.values[0].value, timetable: timetable};
+        return {line: e, timetable: timetable};
       })
     ).then(data => {
       let currentTime = moment();
