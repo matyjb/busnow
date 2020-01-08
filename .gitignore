@@ -8,5 +8,3 @@ app/.env
 firebaseAPI/functions/permissions.json
 
 app2flutter/
-
-firebase/
