@@ -123,38 +123,15 @@ export default class GlobalContextProvider extends Component {
     this._saveFavLinesToStorage(lines);
     this.setState({favLines: lines});
   };
-  _downloadAllStops = async () => {
+  downloadAllStops = async () => {
+    console.log('downloading stops started');
     let stops = await WarsawApi.getStops();
-    console.log('downloaded all stops');
-    let clustered = stops
-      .reduce((rv, x) => {
-        let v = x.unit;
-        let el = rv.find(r => r && r.unit === v);
-        if (el) {
-          el.values.push(x);
-        } else {
-          rv.push({unit: v, values: [x]});
-        }
-        return rv;
-      }, [])
-      .map(claster => {
-        let l = claster.values.reduce(
-          (a, x) => {
-            return {sumlat: a.sumlat + x.lat, sumlon: a.sumlon + x.lon};
-          },
-          {sumlat: 0, sumlon: 0}
-        );
-        return {
-          name: claster.values[0].name,
-          unit: claster.values[0].unit,
-          lat: l.sumlat / claster.values.length,
-          lon: l.sumlon / claster.values.length,
-          stops: claster.values,
-        };
-      });
-    console.log('clustered all stops', clustered.length);
-
-    this.setState({allStops: clustered});
+    if (stops.length != 0) {
+      await this._saveStopsToStorage(this.state.allStops);
+      this.setState({allStops: stops});
+      console.log('saved ', stops.length, 'stops');
+    }
+    console.log('downloading stops ended');
   };
 
   ////////////STORAGE
@@ -220,8 +197,7 @@ export default class GlobalContextProvider extends Component {
   async componentDidMount() {
     //allStops
     if ((await AsyncStorage.getItem('@Storage:stops')) == null) {
-      await this._downloadAllStops();
-      await this._saveStopsToStorage(this.state.allStops);
+      await this.downloadAllStops();
     } else {
       await this._loadStopsFromStorage();
     }
@@ -251,6 +227,7 @@ export default class GlobalContextProvider extends Component {
       setRadarRadius: this.setRadarRadius,
       toggleRadar: this.toggleRadar,
       setMapRegion: this.setMapRegion,
+      downloadAllStops: this.downloadAllStops,
     };
     return (
       <GlobalContext.Provider value={value}>

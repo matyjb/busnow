@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {ThemeConstants} from '../constants/ThemeConstants';
 import {Container, Button, Text, Content} from 'native-base';
 import {ThemeContext} from '../contexts/ThemeContext';
+import {GlobalContext} from '../contexts/GlobalContext';
 
 class SettingsScreen extends React.Component {
   static navigationOptions = ({screenProps}) => {
@@ -25,6 +26,13 @@ class SettingsScreen extends React.Component {
                   zmień motyw na {theme == 'dark' ? 'jasny' : 'ciemny'}
                 </Text>
               </Button>
+              <GlobalContext.Consumer>
+                {({downloadAllStops}) => (
+                  <Button onPress={() => downloadAllStops()}>
+                    <Text>pobierz przystanki</Text>
+                  </Button>
+                )}
+              </GlobalContext.Consumer>
             </Content>
           </Container>
         )}

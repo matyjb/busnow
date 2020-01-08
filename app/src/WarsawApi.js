@@ -45,74 +45,10 @@ class WarsawApi extends React.Component {
   }
 
   static async getStops() {
-    var resource_id = 'ab75c33d-3a26-4342-b36a-6e5fef0a3ac3';
-    var url =
-      'https://api.um.warszawa.pl/api/action/dbstore_get?id=' +
-      resource_id +
-      '&apikey=' +
-      WarsawApi.apikey;
-    var res = await WarsawApi._fetchApi(url, 'getStops');
-
-    if (Array.isArray(res.result)) {
-      //filtering
-
-      console.log('result: ', res.result.length);
-      //mapping to format
-      let mapped = res.result
-        .map(e => {
-          return {
-            unit: e.values[0].value,
-            nr: e.values[1].value,
-            name: e.values[2].value,
-            // street_id: e.values[3].value,
-            lat: e.values[4].value ? Number(e.values[4].value) : null,
-            lon: e.values[5].value ? Number(e.values[5].value) : null,
-            direction:
-              e.values[6].value == '______________________________'
-                ? ''
-                : e.values[6].value,
-            operatesSince: e.values[7].value,
-          };
-        })
-        .filter(e => {
-          if (
-            e.name == '' ||
-            e.lat == null ||
-            isNaN(e.lat) ||
-            e.lon == null ||
-            isNaN(e.lon)
-          ) {
-            // console.log(e);
-
-            return false;
-          }
-          return true;
-        });
-      /////
-      console.log('mapped: ', mapped.length);
-      // take newest
-      let newest = [];
-      for (let i = 0; i < mapped.length - 1; i++) {
-        const e = mapped[i];
-        const next = mapped[i + 1];
-        // same stop
-        if (
-          e.name == next.name &&
-          e.nr == next.nr &&
-          e.unit == next.unit &&
-          moment(e.operatesSince, 'YYYY-MM-DD HH:mm:ss.SSS').diff(
-            moment(next.operatesSince, 'YYYY-MM-DD HH:mm:ss.SSS')
-          ) < 0
-        ) {
-          continue;
-        } else {
-          newest.push(e);
-        }
-      }
-      console.log('newest: ', newest.length);
-      return newest;
-
-      ///////////////
+    var url = "https://europe-west1-bus-now-257020.cloudfunctions.net/getStops";
+    var res = await WarsawApi._fetchApi(url, 'getLine');
+    if (Array.isArray(res)) {
+      return res;
     } else {
       console.log('[error] getLine: ', res);
       return [];
