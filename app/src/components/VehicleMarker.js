@@ -86,12 +86,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     paddingHorizontal: 2,
-    width: 25,
-    height: 24,
+    width: 26,
+    height: 25,
     justifyContent: 'center',
   },
   text: {
     fontSize: 10,
+    textAlign: 'center',
   },
 });
 

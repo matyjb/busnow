@@ -22,6 +22,25 @@ const GEOLOCATION_OPTIONS = {
   maximumAge: 1000,
 };
 
+const distanceBetweenCoordsKM = (lat0, lon0, lat1, lon1) => {
+  const earthRadiusKm = 6371;
+  let lat0rad = (lat0 * Math.PI) / 180;
+  let lon0rad = (lon0 * Math.PI) / 180;
+  let lat1rad = (lat1 * Math.PI) / 180;
+  let lon1rad = (lon1 * Math.PI) / 180;
+  let dLat = lat1rad - lat0rad;
+  let dLon = lon1rad - lon0rad;
+
+  var a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.sin(dLon / 2) *
+      Math.sin(dLon / 2) *
+      Math.cos(lat0rad) *
+      Math.cos(lat1rad);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return earthRadiusKm * c;
+};
+
 class GMap extends Component {
   state = {
     // vehicleMarkers: [],
@@ -44,44 +63,40 @@ class GMap extends Component {
       if (!nextRadar.coordinates) {
         //nextRadar.coordinates is null
         console.log(radar, nextRadar);
-        this._updateRadarLines();
+        this._updateRadarLines(nextProps);
       }
     } else {
       //radar.coordinates is null
       if (nextRadar.coordinates) {
         //nextRadar.coordinates is not null
         console.log(radar, nextRadar);
-        this._updateRadarLines();
+        this._updateRadarLines(nextProps);
       }
     }
   }
 
-  _updateRadarLines = async () => {
+  // if nextProps not given then current props will be used
+  _updateRadarLines = async nextProps => {
     console.log('_updateRadarLines');
 
-    let {favLines, allStops, radar} = this.props.globalContext;
+    let {favLines, allStops, radar} = nextProps
+      ? nextProps.globalContext
+      : this.props.globalContext;
 
     let radarLinesSet = new Set(this.state.radarLines);
     console.log(radar);
     if (radar.coordinates) {
-      const earthRadiusKm = 6371;
       // zebrac wszystkie przystanki co są w radiusie (klastry)
       let stops = allStops.filter(e => {
-        let latRadar = (radar.coordinates.latitude * Math.PI) / 180;
-        let lonRadar = (radar.coordinates.longitude * Math.PI) / 180;
-        let latStop = (e.lat * Math.PI) / 180;
-        let lonStop = (e.lon * Math.PI) / 180;
-        let dLat = latStop - latRadar;
-        let dLon = lonStop - lonRadar;
-
-        var a =
-          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-          Math.sin(dLon / 2) *
-            Math.sin(dLon / 2) *
-            Math.cos(latRadar) *
-            Math.cos(latStop);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return earthRadiusKm * c < radar.radiusKMs + 0.1;
+        return (
+          distanceBetweenCoordsKM(
+            radar.coordinates.latitude,
+            radar.coordinates.longitude,
+            e.lat,
+            e.lon
+          ) <
+          radar.radiusKMs + 0.1
+        );
       });
       // zebrac wszystkie linesy z przystankow
       //   // FOREACH//pushowac do radarLinesSet wszystkie linie z kazdego znalezionego przystanku
@@ -96,15 +111,18 @@ class GMap extends Component {
         }
       }
     }
-    console.log(radarLinesSet);
-    this.setState(
-      {radarLines: Array.from(radarLinesSet)},
-      this._updateVehicles
+    this.setState({radarLines: Array.from(radarLinesSet)}, () =>
+      this._updateVehicles()
     );
   };
 
   _updateVehicles = async () => {
-    let {favLines, selectedMarker, selectMarker} = this.props.globalContext;
+    let {
+      favLines,
+      selectedMarker,
+      selectMarker,
+      radar,
+    } = this.props.globalContext;
     var vehiclesFiltered = [];
 
     var timeNow = moment();
@@ -124,7 +142,19 @@ class GMap extends Component {
         var timeVehicle = moment(v.Time);
         var duration = moment.duration(timeNow.diff(timeVehicle));
         var seconds = duration.asSeconds();
-        if (seconds < 360) vehiclesFiltered.push(v);
+        if (seconds < 360) {
+          // only if inside radar
+          if (
+            distanceBetweenCoordsKM(
+              radar.coordinates.latitude,
+              radar.coordinates.longitude,
+              v.Lat,
+              v.Lon
+            ) <
+            radar.radiusKMs + 0.1
+          )
+            vehiclesFiltered.push(v);
+        }
       });
     }
 
