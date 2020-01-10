@@ -4,6 +4,7 @@ import {ThemeConstants} from '../constants/ThemeConstants';
 import {ThemeContext} from '../contexts/ThemeContext';
 import {Container, Content} from 'native-base';
 import {FlatList} from 'react-native-gesture-handler';
+import TimesList from '../components/TimesList';
 var moment = require('moment');
 
 export default class ScheduleScreen extends Component {
@@ -28,56 +29,20 @@ export default class ScheduleScreen extends Component {
   componentWillUnmount() {
     clearInterval(this.interval);
   }
-  parseTime(timeString) {
-    let time = timeString.split(':');
-    let h = time[0];
-    let m = time[1];
-    let s = time[2];
-    if (this.isNightBus(timeString)) {
-      h -= 24;
-    }
-    return moment(h + ':' + m + ':' + s, 'HH:mm:ss');
-  }
-
-  isNightBus(timeString) {
-    let h = timeString.split(':')[0];
-    if (h >= 24) return true;
-    else return false;
-  }
 
   _updateLeavingTimes = () => {
-    let l = [...this.state.lines]; //to change reference
+    let l = [...this.state.lines];
     let currentTime = moment();
     for (let i = 0; i < l.length; i++) {
-      if (l[i].timetableIndex) {
-        l[i].leavesIn--;
-        if (l[i].leavesIn < 0) {
-          l[i].timetableIndex++;
-          if (l[i].timetableIndex >= l[i].timetable.length) {
-            l[i].timetableIndex = 0;
-            //calc leavesIn (jutro)
-            let leaveTimeString = l[i].timetable[0].values[5].value;
-            let leaveTime = this.parseTime(leaveTimeString);
-            let d = moment.duration(leaveTime.diff(currentTime)).asMinutes();
-            if (this.isNightBus(leaveTimeString)) {
-              //nocny
-              d += 24 * 60;
-            }
-
-            l[i].leavesIn = d;
-          } else {
-            //calc leavesIn
-            let leaveTimeString =
-              l[i].timetable[l[i].timetableIndex].values[5].value;
-            let leaveTime = this.parseTime(leaveTimeString);
-            let d = moment.duration(leaveTime.diff(currentTime)).asMinutes();
-
-            if (this.isNightBus(leaveTimeString)) {
-              //nocny
-              d += 24 * 60;
-            }
-            l[i].leavesIn = d;
-          }
+      for (let j = 0; j < l[i].timetable.length; j++) {
+        let d = moment
+          .duration(l[i].timetable[j].time.diff(currentTime))
+          .asMinutes();
+        if (d < 0) continue;
+        else {
+          l[i].timetableIndex = i;
+          l[i].leavesIn = d;
+          break;
         }
       }
     }
@@ -106,6 +71,10 @@ export default class ScheduleScreen extends Component {
                       <NextLeavesInCountdown t={t} leavesIn={item.leavesIn} />
                     </View>
                     <View style={{backgroundColor: t.accentColor, height: 2}} />
+                    <TimesList
+                      nextIndex={item.timetableIndex}
+                      timesArr={item.timetable.map(e => e.time)}
+                    />
                   </View>
                 )}
               />
@@ -140,7 +109,9 @@ class NextLeavesInCountdown extends PureComponent {
     let {t, style, leavesIn} = this.props;
     if (leavesIn) {
       let time =
-        leavesIn > 60 ? Math.floor(leavesIn / 60) + ' godz' : leavesIn + ' min';
+        leavesIn > 60
+          ? Math.floor(leavesIn / 60) + ' godz'
+          : Math.floor(leavesIn) + ' min';
       return (
         <View style={style}>
           <Text style={{color: t.textColor, ...styles.countdown}}>{time}</Text>

@@ -81,7 +81,9 @@ class WarsawApi extends React.Component {
     var res = await WarsawApi._fetchApi(url, 'getStopLines');
 
     if (Array.isArray(res.result)) {
-      return res.result;
+      return res.result.map(e => {
+        return e.values[0].value;
+      });
     } else {
       console.log('[error] getStopLines: ', res);
       return [];
@@ -105,7 +107,26 @@ class WarsawApi extends React.Component {
     var res = await WarsawApi._fetchApi(url, 'getStopLineSchedule');
 
     if (Array.isArray(res.result)) {
-      return res.result;
+      return res.result.map(e => {
+        let time = e.values[5].value.split(':');
+        let h = time[0];
+        let m = time[1];
+        let s = time[2];
+        let isAfterMidnight = false;
+        if (h >= 24) {
+          h -= 24;
+          isAfterMidnight = true;
+        }
+        time = moment(h + ':' + m + ':' + s, 'HH:mm:ss');
+        return {
+          // line: line,
+          brygade: e.values[2].value,
+          direction: e.values[3].value,
+          route: e.values[4].value,
+          time: time,
+          isAfterMidnight: isAfterMidnight,
+        };
+      });
     } else {
       console.log('[error] getStopLineSchedule: ', res);
       return [];

@@ -34,7 +34,7 @@ class GMap extends Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     let {radar} = this.props.globalContext;
     let nextRadar = nextProps.globalContext.radar;
-    
+
     if (!nextRadar.coordinates) {
       this.setState({radarLines: []});
       return;
