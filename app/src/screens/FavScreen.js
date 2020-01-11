@@ -2,7 +2,7 @@ import React, {PureComponent} from 'react';
 import {Text, StyleSheet, View} from 'react-native';
 import {ThemeConstants} from '../constants/ThemeConstants';
 import {withThemeContext, ThemeContext} from '../contexts/ThemeContext';
-import {Container, Tabs, Tab} from 'native-base';
+import {Container, Tabs, Tab, Button, Icon} from 'native-base';
 import {withGlobalContext, GlobalContext} from '../contexts/GlobalContext';
 
 export default class FavScreen extends PureComponent {
@@ -20,7 +20,7 @@ export default class FavScreen extends PureComponent {
       <ThemeContext.Consumer>
         {({t}) => (
           <Container>
-            <Tabs>
+            <Tabs style={{backgroundColor: t.primaryColor}}>
               <Tab
                 heading="Linie"
                 tabStyle={{backgroundColor: t.headerColor}}
@@ -28,7 +28,26 @@ export default class FavScreen extends PureComponent {
                 textStyle={{color: 'white'}}
               >
                 <GlobalContext.Consumer>
-                  {({favLines, toggleLine}) => <Text>tab1</Text>}
+                  {({favLines, toggleLine}) => (
+                    <View style={{flex: 1, backgroundColor: t.primaryColor}}>
+                      {favLines.map((l, i) => (
+                        <View key={i} style={styles.item}>
+                          <Text
+                            style={{...styles.itemText, color: t.textColor}}
+                          >
+                            {l}
+                          </Text>
+                          <Button onPress={() => toggleLine(l)} transparent>
+                            <Icon
+                              name="circle-with-minus"
+                              type="Entypo"
+                              style={styles.itemButton}
+                            />
+                          </Button>
+                        </View>
+                      ))}
+                    </View>
+                  )}
                 </GlobalContext.Consumer>
               </Tab>
               <Tab
@@ -38,7 +57,29 @@ export default class FavScreen extends PureComponent {
                 textStyle={{color: 'white'}}
               >
                 <GlobalContext.Consumer>
-                  {({favStops, toggleStopInFavs}) => <Text>tab2</Text>}
+                  {({favStops, toggleStopInFavs}) => (
+                    <View style={{flex: 1, backgroundColor: t.primaryColor}}>
+                      {favStops.map((s, i) => (
+                        <View key={i} style={styles.item}>
+                          <Text
+                            style={{...styles.itemText, color: t.textColor}}
+                          >
+                            {s.name + ' ' + s.nr}
+                          </Text>
+                          <Button
+                            onPress={() => toggleStopInFavs(s)}
+                            transparent
+                          >
+                            <Icon
+                              name="circle-with-minus"
+                              type="Entypo"
+                              style={styles.itemButton}
+                            />
+                          </Button>
+                        </View>
+                      ))}
+                    </View>
+                  )}
                 </GlobalContext.Consumer>
               </Tab>
             </Tabs>
@@ -49,4 +90,18 @@ export default class FavScreen extends PureComponent {
   }
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  item: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 2,
+  },
+  itemText: {
+    alignSelf: 'center',
+    fontSize: 25,
+  },
+  itemButton: {
+    color: 'red',
+  },
+});
