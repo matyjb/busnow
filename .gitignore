@@ -1,11 +1,7 @@
-
-app/android/app/src/main/res/values/secrets.json
-
-app/secrets.properties
-
 app/.env
 
 firebaseAPI/functions/permissions.json
 
 app2flutter/
-app/android/gradle.properties
+
+app/android/app/keystore.properties
