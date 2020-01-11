@@ -37,7 +37,10 @@ class BottomModal extends Component {
               style={{color: t.accentColor}}
             />
           </Button>
-          <Button transparent onPress={() => {}}>
+          <Button
+            transparent
+            onPress={() => this.props.navigation.navigate('Fav')}
+          >
             <Icon
               style={styles.icon}
               name="star"

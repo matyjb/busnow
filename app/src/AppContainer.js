@@ -5,6 +5,7 @@ import MapScreen from './screens/MapScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import {ThemeContext} from './contexts/ThemeContext';
 import ScheduleScreen from './screens/ScheduleScreen';
+import FavScreen from './screens/FavScreen';
 
 const Stack = createStackNavigator(
   {
@@ -16,6 +17,9 @@ const Stack = createStackNavigator(
     },
     Schedule: {
       screen: ScheduleScreen,
+    },
+    Fav: {
+      screen: FavScreen,
     },
   },
   {

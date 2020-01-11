@@ -3,15 +3,22 @@ import {Text, StyleSheet, View, StatusBar, SafeAreaView} from 'react-native';
 import GlobalContextProvider from './contexts/GlobalContext';
 import {Root} from 'native-base';
 import AppContainer from './AppContainer';
-import ThemeContextProvider from './contexts/ThemeContext';
+import ThemeContextProvider, {ThemeContext} from './contexts/ThemeContext';
 
 export default class App extends Component {
   render() {
     return (
       <Root>
         <GlobalContextProvider>
-          <StatusBar hidden />
           <ThemeContextProvider>
+            <ThemeContext.Consumer>
+              {({t, theme}) => (
+                <StatusBar
+                  backgroundColor={t.headerColor}
+                  barStyle={theme == 'dark' ? 'light-content' : 'dark-content'}
+                />
+              )}
+            </ThemeContext.Consumer>
             <AppContainer />
           </ThemeContextProvider>
         </GlobalContextProvider>

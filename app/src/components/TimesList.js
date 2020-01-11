@@ -17,7 +17,10 @@ class TimesList extends PureComponent {
             textColor = t.accentColor;
           }
           return (
-            <Text style={{color: textColor}}> {time.format('HH:mm')} </Text>
+            <Text key={i} style={{color: textColor}}>
+              {' '}
+              {time.format('HH:mm')}{' '}
+            </Text>
           );
         })}
       </View>
