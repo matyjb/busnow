@@ -16,7 +16,7 @@ class LineTagRow extends Component {
   };
 
   async componentDidMount() {
-    await this._initState(this.props.stop.unit, this.props.stop.nr);
+    await this._initState(this.props.stop);
     this.interval = setInterval(this._updateLeavingTimes, 60000);
   }
 
@@ -25,7 +25,7 @@ class LineTagRow extends Component {
       nextProps.stop.unit != this.props.stop.unit ||
       nextProps.stop.nr != this.props.stop.nr
     ) {
-      this._initState(nextProps.stop.unit, nextProps.stop.nr);
+      this._initState(nextProps.stop);
     }
   }
 
@@ -49,46 +49,12 @@ class LineTagRow extends Component {
         }
       }
     }
-
-    // for (let i = 0; i < l.length; i++) {
-    //   if (l[i].timetableIndex) {
-    //     l[i].leavesIn--;
-    //     if (l[i].leavesIn < 0) {
-    //       l[i].timetableIndex++;
-    //       if (l[i].timetableIndex >= l[i].timetable.length) {
-    //         l[i].timetableIndex = 0;
-    //         //calc leavesIn (jutro)
-    //         let leaveTimeString = l[i].timetable[0].values[5].value;
-    //         let leaveTime = this.parseTime(leaveTimeString);
-    //         let d = moment.duration(leaveTime.diff(currentTime)).asMinutes();
-    //         if (this.isNightBus(leaveTimeString)) {
-    //           //nocny
-    //           d += 24 * 60;
-    //         }
-
-    //         l[i].leavesIn = d;
-    //       } else {
-    //         //calc leavesIn
-    //         let leaveTimeString =
-    //           l[i].timetable[l[i].timetableIndex].values[5].value;
-    //         let leaveTime = this.parseTime(leaveTimeString);
-    //         let d = moment.duration(leaveTime.diff(currentTime)).asMinutes();
-
-    //         if (this.isNightBus(leaveTimeString)) {
-    //           //nocny
-    //           d += 24 * 60;
-    //         }
-    //         l[i].leavesIn = d;
-    //       }
-    //     }
-    //   }
-    // }
     this.setState({lines: l});
   };
 
-  _initState = async (unit, nr) => {
+  _initState = async stop => {
     this.setState({lines: []});
-    let lines = this.props.stop.lines;
+    let {unit, nr, lines} = stop;
 
     Promise.all(
       lines.map(async e => {
@@ -108,25 +74,6 @@ class LineTagRow extends Component {
           else return {...e, timetableIndex: i, leavesIn: d};
         }
         return e;
-        //   const t = e.timetable[i];
-        //   let leaveTime = this.parseTime(t.time);
-
-        //   if (this.isNightBus(t.time)) {
-        //     //nocny
-        //     d += 24 * 60;
-        //   }
-
-        //   if (d < 0) continue;
-        // }
-        // // kolejny jest jutro
-        // let leaveTime = this.parseTime(e.timetable[0].time);
-        // let d =
-        // moment.duration(leaveTime.diff(currentTime)).asMinutes() + 24 * 60;
-        // if (this.isNightBus(e.timetable[0].time)) {
-        //   //nocny
-        //   d += 24 * 60;
-        // }
-        // return {...e, timetableIndex: 0, leavesIn: d};
       });
       this.setState({lines: result});
     });
