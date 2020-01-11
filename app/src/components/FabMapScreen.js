@@ -6,7 +6,7 @@ import {withGlobalContext} from '../contexts/GlobalContext';
 class FabMapScreen extends Component {
   render() {
     let {t} = this.props.themeContext;
-    let {toggleRadar, navigateToUser} = this.props.globalContext;
+    let {toggleRadar, navigateToUser, openModal} = this.props.globalContext;
     return (
       <Fab
         active={true}
@@ -35,7 +35,7 @@ class FabMapScreen extends Component {
         </Button>
         <Button
           style={{...this.props.style, backgroundColor: t.accentColor}}
-          onPress={() => this.props.modalref.open()}
+          onPress={() => openModal()}
         >
           <Icon name="md-menu" style={{color: t.primaryColor}} />
         </Button>

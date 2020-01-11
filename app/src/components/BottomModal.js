@@ -8,9 +8,18 @@ import {withGlobalContext} from '../contexts/GlobalContext';
 import {FlatList} from 'react-native-gesture-handler';
 
 class BottomModal extends Component {
+  // componentDidMount() {
+  //   let {setModalRef} = this.props.globalContext;
+  //   setModalRef(this.modal);
+  // }
   render() {
     let {t} = this.props.themeContext;
-    let {favStops, navigateToMarkerAndSelect} = this.props.globalContext;
+    let {
+      favStops,
+      navigateToMarkerAndSelect,
+      setModalRef,
+      closeModal,
+    } = this.props.globalContext;
     return (
       <Modal
         style={{
@@ -20,10 +29,7 @@ class BottomModal extends Component {
         }}
         position={'bottom'}
         backButtonClose
-        ref={r => {
-          this.props._modalref(r);
-          this._modal = r;
-        }}
+        ref={setModalRef}
         swipeArea={styles.iconsContainer.height}
       >
         <View style={styles.iconsContainer}>
@@ -62,7 +68,7 @@ class BottomModal extends Component {
                 item={item}
                 t={t}
                 onPress={() => {
-                  this._modal.close();
+                  closeModal();
                   navigateToMarkerAndSelect(item);
                 }}
               />

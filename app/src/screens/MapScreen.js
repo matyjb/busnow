@@ -15,12 +15,8 @@ class MapScreen extends React.Component {
       <>
         <GMap />
         <InfoBox />
-        <BottomModal
-          _modalref={ref => {
-            this._modal = ref;
-          }}
-        />
-        <FabMapScreen style={{elevation: 0}} modalref={this._modal} />
+        <BottomModal />
+        <FabMapScreen style={{elevation: 0}} />
       </>
     );
   }

@@ -50,6 +50,17 @@ export default class GlobalContextProvider extends Component {
     this.setState({favStops: stops});
   };
 
+  setModalRef = r => {
+    this.modal = r;
+  };
+
+  openModal = () => {
+    this.modal.open();
+  };
+  closeModal = () => {
+    this.modal.close();
+  };
+
   setMapRef = r => {
     this.map = r;
   };
@@ -228,6 +239,9 @@ export default class GlobalContextProvider extends Component {
       toggleRadar: this.toggleRadar,
       setMapRegion: this.setMapRegion,
       downloadAllStops: this.downloadAllStops,
+      openModal: this.openModal,
+      closeModal: this.closeModal,
+      setModalRef: this.setModalRef,
     };
     return (
       <GlobalContext.Provider value={value}>
