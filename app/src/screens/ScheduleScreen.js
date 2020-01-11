@@ -40,7 +40,7 @@ export default class ScheduleScreen extends Component {
           .asMinutes();
         if (d < 0) continue;
         else {
-          l[i].timetableIndex = i;
+          l[i].timetableIndex = j;
           l[i].leavesIn = d;
           break;
         }

@@ -29,8 +29,8 @@ class TimesList extends PureComponent {
 }
 
 TimesList.propTypes = {
-  nextIndex: PropTypes.number.isRequired,
-  timesArr: PropTypes.arrayOf(PropTypes.string).isRequired,
+  nextIndex: PropTypes.number,
+  timesArr: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 const styles = StyleSheet.create({

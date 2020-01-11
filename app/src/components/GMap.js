@@ -62,14 +62,12 @@ class GMap extends Component {
       //radar.coordinates is not null
       if (!nextRadar.coordinates) {
         //nextRadar.coordinates is null
-        console.log(radar, nextRadar);
         this._updateRadarLines(nextProps);
       }
     } else {
       //radar.coordinates is null
       if (nextRadar.coordinates) {
         //nextRadar.coordinates is not null
-        console.log(radar, nextRadar);
         this._updateRadarLines(nextProps);
       }
     }
@@ -77,14 +75,11 @@ class GMap extends Component {
 
   // if nextProps not given then current props will be used
   _updateRadarLines = async nextProps => {
-    console.log('_updateRadarLines');
-
     let {favLines, allStops, radar} = nextProps
       ? nextProps.globalContext
       : this.props.globalContext;
 
     let radarLinesSet = new Set(this.state.radarLines);
-    console.log(radar);
     if (radar.coordinates) {
       // zebrac wszystkie przystanki co są w radiusie (klastry)
       let stops = allStops.filter(e => {
@@ -100,7 +95,6 @@ class GMap extends Component {
       });
       // zebrac wszystkie linesy z przystankow
       //   // FOREACH//pushowac do radarLinesSet wszystkie linie z kazdego znalezionego przystanku
-      console.log(stops.length);
 
       for (const cluster of stops) {
         for (const s of cluster.stops) {
