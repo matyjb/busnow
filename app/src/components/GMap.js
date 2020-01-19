@@ -229,7 +229,7 @@ class GMap extends Component {
   _renderStopsMarkers() {
     if (this.state.mapRegion.latitudeDelta > 0.035) return [];
 
-    let clasters = this.state.mapRegion.latitudeDelta > 0.02;
+    let clasters = this.state.mapRegion.latitudeDelta >= 0.02;
 
     if (clasters) {
       return this.state.stopsInBounds.map(c => (
