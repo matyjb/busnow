@@ -1,7 +1,7 @@
 apply plugin: "com.android.application"
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
-def keystorePropertiesFile = file('keystore.properties')
+def keystorePropertiesFile = file('../../keystore.properties')
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
@@ -158,7 +158,7 @@ android {
             keyPassword 'android'
         }
         release {
-            storeFile file(keystoreProperties['UPLOAD_STORE_FILE'])
+            storeFile file('../../'+keystoreProperties['UPLOAD_STORE_FILE'])
             storePassword keystoreProperties['UPLOAD_STORE_PASSWORD']
             keyAlias keystoreProperties['UPLOAD_KEY_ALIAS']
             keyPassword keystoreProperties['UPLOAD_KEY_PASSWORD']
