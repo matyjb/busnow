@@ -83,7 +83,7 @@ class SettingsScreen extends Component {
                 Twórca: Bartosz Matyjasiak
               </Text>
               <Text style={{color: t.textColor, textAlign: 'center'}}>
-                Aplikacja stworzona jako praca inzynierska w Szkole Głównej
+                Aplikacja stworzona jako praca inżynierska w Szkole Głównej
                 Gospodarstwa Wiejskiego w Warszawie.
               </Text>
             </Content>

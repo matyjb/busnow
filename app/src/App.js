@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, StyleSheet, View, StatusBar, SafeAreaView} from 'react-native';
+import {StatusBar} from 'react-native';
 import GlobalContextProvider from './contexts/GlobalContext';
 import {Root} from 'native-base';
 import AppContainer from './AppContainer';
